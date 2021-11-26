@@ -355,30 +355,23 @@ def SpecialKeyboard(tecla, x, y):
   EspecificaParametrosVisualizacao()
   glutPostRedisplay()
 
-def teclado(key, x, y):
+def teclado(tecla, x, y):
   global ativo, orbita, obsZ
 
-  if key == 27:
-    print("  Até logo! ^_^ \n")
-    exit()
+  if tecla == chr(27): # Esc para sair
+    sys.exit()
 
-  elif key == 'l' or key == 'L':
+  elif tecla == b'l' or tecla == b'L': # Remove o Sol e toda a luz do sistema
     ativo = not ativo
     glutDisplayFunc(Sistema_Solar_com_orbitas)
 
-  elif key == 49: # numero 1 - visao de cima
-    obsZ = 2000
-
-
-  elif key == 'c' or key == 'C': # centraliza no Sol
+  elif tecla == b'c' or tecla == b'C': # Centraliza no Sol - visao superior do sistema
     obsZ = 50
 
-
-  elif key == 'o' or key == 'O': # Mostra as orbitas
-
+  elif tecla == b'o' or tecla == b'O': # Mostra ou remove as orbitas
     orbita = not orbita
 
-    if(orbita==1):
+    if(orbita==True):
       glutDisplayFunc(Sistema_Solar_com_orbitas)
     else:
       # Mostra o sistema solar sem as orbitas
