@@ -7,19 +7,20 @@ from OpenGL.GLU import *
 
 from texture import load_images
 
-# Globals
+# Variaveis globais
 global angulo, fAspect, rotX, rotY, rotZ, obsX, obsY, obsZ, ativo
 global rotX_ini, rotY_ini, obsX_ini, obsY_ini, obsZ_ini, x_ini, y_ini, bot
 global tex0, tex1, tex2, tex3, tex4, tex5, tex6, tex7, tex8, tex9, tex10, tex11
-
-SENS_ROT = 5.0
-SENS_OBS = 10.0
-SENS_TRANSL = 10.0
 
 ativo = 1
 orbita = 1
 p = 1.0
 x, y, z = 0, 0, 0
+
+# Constantes utilizadas na interacao com o mouse
+SENS_ROT = 5.0
+SENS_OBS = 10.0
+SENS_TRANSL = 10.0
 
 
 def Desenha_planeta(textura, pos_y, pos_x, escala, diametro, raio):
@@ -51,7 +52,7 @@ def Desenha_planetas_com_Satelites_e_Aneis(textura_planeta, textura_satelite, te
   glRasterPos2f(0,-pos_y)
   # glutBitmapString(GLUT_BITMAP_9_BY_15, planeta)
   glTranslated(0, -pos_y, 0)
-  # Movimento de Translação
+  # Movimento de Translacao
   glTranslatef((pos_x * math.cos(2.0 * 3.14 * a*raio / 100)),(pos_y +pos_y * math.sin(2.0 * 3.14 * a*raio/ 100)), 0)
   obj = gluNewQuadric()
   gluQuadricTexture(obj, GL_TRUE)
@@ -66,7 +67,7 @@ def Desenha_planetas_com_Satelites_e_Aneis(textura_planeta, textura_satelite, te
   glBindTexture(GL_TEXTURE_2D, textura_aneis)
   desenhaAnel(pos_x/80,pos_y/80)
 
-  # Satélite
+  # Satelite
   # Translacao da Lua
   glTranslatef(pos_x/20*(math.cos(2.0 * 3.14 * a*raio_lua / 100)),(pos_y/20*math.sin(2.0 * 3.14 * a*raio_lua / 100)), 0)
   glBindTexture(GL_TEXTURE_2D,textura_satelite)
@@ -85,7 +86,7 @@ def desenha_planetas_com_Satelites(textura_planeta, textura_satelite, pos_y, pos
   glRasterPos2f(0,-pos_y)
   # glutBitmapString(GLUT_BITMAP_9_BY_15, planeta)
   glTranslated(0, -pos_y, 0)
-  # Movimento de Translação
+  # Movimento de Translacao
   glTranslatef((pos_x * math.cos(2.0 * 3.14 * a*raio / 100)),(pos_y +pos_y * math.sin(2.0 * 3.14 * a*raio/ 100)), 0)
   obj = gluNewQuadric()
   gluQuadricTexture(obj,GL_TRUE)
@@ -95,7 +96,7 @@ def desenha_planetas_com_Satelites(textura_planeta, textura_satelite, pos_y, pos
   glRotated(a*20, 0, 0, 1)
   gluSphere(obj,diametro1,25,25)
 
-  # Satélite
+  # Satelite
   # Translacao da Lua
   glTranslatef(pos_x/10*(math.cos(2.0 * 3.14 * a*raio_lua / 100)),(pos_y/10*math.sin(2.0 * 3.14 * a*raio_lua / 100)), 0)
 
@@ -125,7 +126,7 @@ def Desenha():
   Sistema_Solar()
   glutSwapBuffers()
 
-# Desenha o sistema solar e as órbitas dos planetas
+# Desenha o sistema solar e as orbitas dos planetas
 def Sistema_Solar():
   global tex1, tex2
 
@@ -141,7 +142,7 @@ def Sistema_Solar():
     light_specular = [x, y, z, 1.0]
     light_position= [1.0, 0.0, 0.0, 1.0]
     
-    # configura alguns parâmetros do modelo de iluminação: MATERIAL
+    # configura alguns parametros do modelo de iluminacao: MATERIAL
     mat_ambient    = [0.7, 0.7, 0.7, 1.0 ]
     mat_diffuse    = [0.8, 0.8, 0.8, 1.0 ]
     mat_specular   = [ 1.0, 1.0, 1.0, 1.0 ]
@@ -181,10 +182,10 @@ def Sistema_Solar():
     glEnable(GL_LIGHT0)
     glEnable(GL_DEPTH_TEST)
 
-  # MERCÚRIO - Diametro: 4.879,4 km
+   # MERCURIO - Diametro: 4.879,4 km
   Desenha_planeta(tex1, 7, 7, 2,0.48,3.7)
 
-  # VÊNUS - Diametro: 12.103,6 km
+  # VENUS - Diametro: 12.103,6 km
   Desenha_planeta(tex2, 17, 17, 1.2, 1.21 ,2.5)
 
   # TERRA E LUA - Diametro Terra: 12.756,2 km
@@ -193,7 +194,7 @@ def Sistema_Solar():
   # MARTE - Diametro: 6.792,4 km
   desenha_planetas_com_Satelites(tex5, tex4, 41, 41, 1.2,0.68,0.5,1.9,1)
 
-  # JÚPITER       */ #Diametro: 142.984 km
+  # JUPITER       */ #Diametro: 142.984 km
   Desenha_planetas_com_Satelites_e_Aneis(tex6, tex4, tex8, 80, 80, 1.5,1.43,0.25,1.9,1)
 
   # SATURNO     */ #Diametro: 120.536 km
@@ -205,7 +206,7 @@ def Sistema_Solar():
   # NETUNO   */  #Diametro: 49.528 km
   Desenha_planetas_com_Satelites_e_Aneis(tex11, tex4, tex10, 127, 127, 1.5,0.495,0.20,1,1)
 
-  # PLUTÃO */  #Diametro: 2.377 km
+  # PLUTAO */  #Diametro: 2.377 km
   desenha_planetas_com_Satelites(tex4, tex4, 140, 140,-0.35,2.3,3,0.8,0.6)
 
   glRasterPos2f(0,-51)
@@ -216,7 +217,7 @@ def Desenha_Orbita(pos_y, pos_x):
   glPushMatrix()
   glTranslated(0, -pos_y, 0)
   glBegin(GL_LINE_LOOP)
-  for i in range(100): # Desenha a linha da órbita, a variável i vai juntando cada linha em uma circunferencia
+  for i in range(100): # Desenha a linha da orbita, a variavel i vai juntando cada linha em uma circunferencia
     glVertex2f(
       pos_x * math.cos(2.0 * 3.14 * i / 100),
       pos_y + pos_y * math.sin(2.0 * 3.14 * i / 100)
@@ -227,10 +228,10 @@ def Desenha_Orbita(pos_y, pos_x):
 
 def mostraOrbitas():
 
-  # MERCÚRIO - Diametro: 4.879,4 km
+  # MERCURIO - Diametro: 4.879,4 km
   Desenha_Orbita(7,7)
 
-  # VÊNUS - Diametro: 12.103,6 km
+  # VENUS - Diametro: 12.103,6 km
   Desenha_Orbita(17,17)
 
   # TERRA - Diametro: 12.756,2 km
@@ -239,7 +240,7 @@ def mostraOrbitas():
   # MARTE -Diametro: 6.792,4 km
   Desenha_Orbita(41,41)
 
-  # JÚPITER - Diametro: 142.984 km
+  # JUPITER - Diametro: 142.984 km
   Desenha_Orbita(80,80)
 
   # SATURNO - Diametro: 120.536 km
@@ -251,7 +252,7 @@ def mostraOrbitas():
   # NETUNO - Diametro: 49.528 km
   Desenha_Orbita(127,127)
 
-  # PLUTÃO - Diametro: 2.377 km
+  # PLUTAO - Diametro: 2.377 km
   # Desenha_Orbita(140,140)
 
 def Sistema_Solar_com_orbitas():
@@ -264,16 +265,17 @@ def Sistema_Solar_com_orbitas():
   glutSwapBuffers()
 
 def atualiza():
+  # Marca o plano normal da janela atual como precisando ser reexibido na proxima iteracao do glutMainLoop
   glutPostRedisplay()
 
 def Inicializa ():
   global angulo, rotX, rotY, rotZ, obsX, obsY, obsZ
   global tex0, tex1, tex2, tex3, tex4, tex5, tex6, tex7, tex8, tex9, tex10, tex11
 
-  # Inicializa a variável que especifica o ângulo da projeção
+  # Inicializa a variavel que especifica o angulo da projecao
   # perspectiva
   angulo = 10
-  # Inicializa as variáveis usadas para alterar a posição do
+  # Inicializa as variaveis usadas para alterar a posicao do
   # observador virtual
   rotX = 0
   rotY = 0
@@ -287,13 +289,13 @@ def Inicializa ():
   # #Inicializa obj
   # inicializaObj()
 
-  # Não mostrar faces do lado de dentro
-  glEnable(GL_CULL_FACE)
-  glCullFace(GL_BACK)
+  # Especificando que as facetas traseiras serao cortadas
+  glEnable(GL_CULL_FACE) # Habilita recursos do GL -> cortar as facetas
+  glCullFace(GL_BACK) # Nao mostrar faces do lado de dentro
 
-  glEnable(GL_LIGHTING)
-  glEnable(GL_LIGHT0)
-  glEnable(GL_DEPTH_TEST)
+  glEnable(GL_LIGHTING) # Prepara o OpenGL para realizar calculos de iluminacao
+  glEnable(GL_LIGHT0)  # Especifica que a fonte de luz tem cor padrao para luz (branco)
+  glEnable(GL_DEPTH_TEST) # Atualiza o buffer de profundidade
 
 def Redimensiona(w, h):
   global fAspect
@@ -330,6 +332,8 @@ def PosicionaObservador():
   glRotatef(rotY,0,1,0)
   glRotatef(rotZ,0,0,1)
 
+
+# Funcoes para interagir com teclado e mouse
 def SpecialKeyboard(tecla, x, y):
   global angulo, rotX, rotY
 
@@ -388,7 +392,7 @@ def GerenciaMouse(button, state, x, y):
   global obsX, obsY, obsZ, rotX, rotY, obsX_ini, obsY_ini, obsZ_ini, rotX_ini, rotY_ini, x_ini, y_ini, bot
 
   if (state==GLUT_DOWN):
-    # Salva os parâmetros atuais
+    # Salva os parametros atuais
     x_ini = x
     y_ini = y
     obsX_ini = obsX
@@ -403,30 +407,30 @@ def GerenciaMouse(button, state, x, y):
 def GerenciaMovim(x, y):
   global x_ini, y_ini, rotX, rotY, obsX, obsY, obsZ
 
-  # Botão esquerdo do mouse
+  # Botao esquerdo do mouse
   if(bot==GLUT_LEFT_BUTTON):
     # Calcula diferenças
     deltax = x_ini - x
     deltay = y_ini - y
-    # E modifica ângulos
+    # E modifica angulos
     rotY = rotY_ini - deltax/SENS_ROT
     rotX = rotX_ini - deltay/SENS_ROT
 
-  # Botão direito do mouse
+  # Botao direito do mouse
   elif(bot==GLUT_RIGHT_BUTTON):
     deltax = x_ini - x
     deltay = y_ini - y
     # Calcula diferença
     deltaz = deltax - deltay
-    # E modifica distância do observador
+    # E modifica distancia do observador
     obsZ = obsZ_ini + deltaz/SENS_OBS
 
-  # Botão do meio
+  # Botao do meio
   elif(bot==GLUT_MIDDLE_BUTTON):
-    # Calcula diferenças
+    # Calcula diferencas
     deltax = x_ini - x
     deltay = y_ini - y
-    # E modifica posições
+    # E modifica posicoes
     obsX = obsX_ini + deltax/SENS_TRANSL
     obsY = obsY_ini - deltay/SENS_TRANSL
 
@@ -434,25 +438,38 @@ def GerenciaMovim(x, y):
   glutPostRedisplay()
 
 def main():
+  # Inicializa a lib glut, com um contexto openGL especificando a versao e em modo de compatibilidade
+  # Sera utilizada para criar janelas, ler o teclado e o mouse
   glutInit(sys.argv)
-  glutInitContextVersion(1,1)
+  glutInitContextVersion(1,1) 
   glutInitContextProfile(GLUT_COMPATIBILITY_PROFILE)
-  glutInitDisplayMode(GLUT_RGB| GLUT_DOUBLE | GLUT_DEPTH)
+
+  # Inicia uma janela, definindo tamanho e posicao
+  glutInitDisplayMode(GLUT_RGB| GLUT_DOUBLE | GLUT_DEPTH) # Define janela com RGB, profundidade de dois buffers (um exibido e outro renderizando para trocar com o atual)
   glutInitWindowSize(1800,1200)
   glutInitWindowPosition(100,100)
   glutCreateWindow("Sistema Solar")
-  # imprimeInstrucoes()
+
+  # imprimeInstrucoes() <-> Metodo comentado
+
+  # Exibe na tela o retorno da funcao chamada
   glutDisplayFunc(Sistema_Solar_com_orbitas)
+  # ??? Qual o objetivo?
   glutReshapeFunc(Redimensiona)
+  # Define o retorno das teclas direcionais, teclado e mouse para a janela atual
   glutSpecialFunc(SpecialKeyboard)
   glutKeyboardFunc(teclado)
   glutMouseFunc(GerenciaMouse)
+  # Quando o mouse se move dentro da janela enquanto um ou mais botoes do mouse sao pressionados
   glutMotionFunc(GerenciaMovim)
+
+  # Inicializa ambiente (variaveis, texturas, fonte de luz e atualizacao de profundidade)
   Inicializa()
 
-  glutIdleFunc(atualiza)
-  glutMainLoop()
-
+  # Processamento em segundo plano ou animacao continua. Chama metodo de atualizar a janela atual
+  glutIdleFunc(atualiza) 
+  # Renderiza a janela criada
+  glutMainLoop() 
   return 0
 
 main()
