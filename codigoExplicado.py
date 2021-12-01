@@ -108,16 +108,22 @@ def desenha_planetas_com_Satelites(textura_planeta, textura_satelite, pos_y, pos
   glPopMatrix()
 
 def desenhaAnel(eixoX, eixoY):
+  # Insere a matriz de transformacoes corrente na pilha para realizar as transformacoes
+  # Serve para restringir o efeito das transformacoes ao escopo que desejamos ou lembrar da sequencia de transformacoes realizadas
   glPushMatrix()
+  # glBegin Inicia uma lista de vertices, e o argumento determina qual objeto sera desenhado
+  # GL_LINE_LOOP exibe uma sequencia de linhas conectando os pontos definidos por glVertex e ao final liga o primeiro como ultimo ponto
   glBegin(GL_LINE_LOOP)
   for i in range(360):
     rad = i*3.14/180
-    glVertex2f(math.cos(rad)*eixoX,math.sin(rad)*eixoY)
+    glVertex2f(math.cos(rad)*eixoX,math.sin(rad)*eixoY) # Especifica um vertice
   glEnd()
+  # Retira a matriz do topo da pilha e torna esta ultima a matriz de transformacao corrente
   glPopMatrix()
 
 def Desenha():
   glDrawBuffer(GL_BACK)
+  # Limpa a janela de visualizao com a cor de fundo especificada
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
   # desenha todos os objetos na tela
   Sistema_Solar()
@@ -254,6 +260,7 @@ def mostraOrbitas():
 
 def Sistema_Solar_com_orbitas():
   glDrawBuffer(GL_BACK)
+  # Limpa a janela de visualizao com a cor de fundo especificada
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
   # desenha todos os objetos na tela
   Sistema_Solar()
@@ -261,6 +268,7 @@ def Sistema_Solar_com_orbitas():
   glutSwapBuffers()
 
 def atualiza():
+  # Marca o plano normal da janela atual como precisando ser reexibido na proxima iteracao do glutMainLoop
   glutPostRedisplay()
 
 def Inicializa ():
@@ -284,43 +292,58 @@ def Inicializa ():
   # #Inicializa obj
   # inicializaObj()
 
-  glEnable(GL_CULL_FACE)
-  glCullFace(GL_BACK)
+  # Especificando que as facetas traseiras serao cortadas
+  glEnable(GL_CULL_FACE) # Habilita recursos do GL -> cortar as facetas
+  glCullFace(GL_BACK) # Nao mostrar faces do lado de dentro
 
-  glEnable(GL_LIGHTING)
-  glEnable(GL_LIGHT0)
-  glEnable(GL_DEPTH_TEST)
+  glEnable(GL_LIGHTING) # Prepara o OpenGL para realizar calculos de iluminacao
+  glEnable(GL_LIGHT0)  # Especifica que a fonte de luz tem cor padrao para luz (branco)
+  glEnable(GL_DEPTH_TEST) # Atualiza o buffer de profundidade
 
+# Passos padrao da biblioteca
+# Especifica a posicao do observador e do alvo
 def PosicionaObservador():
+  # Especifica o sistema de coordenadas do modelo
   glMatrixMode(GL_MODELVIEW)
+  # Inicializa sistema de coordenadas do modelo
   glLoadIdentity()
 
+  # Posiciona e orienta o observador - transformacoes geometricas de translacao e rotacao em (eixoX, eixoY, eixoZ)
   glTranslatef(-obsX*0.5,-obsY*0.5,-obsZ*0.5)
   glRotatef(rotX,1,0,0)
   glRotatef(rotY,0,1,0)
   glRotatef(rotZ,0,0,1)
 
+# Funcao padrao da biblioteca para especificar o volume de visualizacao
 def EspecificaParametrosVisualizacao():
   global angulo
+  # Especifica sistema de coordenadas de projecao
   glMatrixMode(GL_PROJECTION)
+  # Inicializa sistema de coordenadas de projecao
   glLoadIdentity()
+  # Especifica a projecao perspectiva(angulo,aspecto,zMin,zMax)
   gluPerspective(angulo,fAspect,0.5,2000)
+  # Especifica a posicao do observador e do alvo
   PosicionaObservador()
 
+# Funcao padrao da biblioteca para alterar o tamanho da tela 
 def Redimensiona(w, h):
   global fAspect
   # Para previnir uma divisao por zero
   if ( h == 0 ):
     h = 1
 
+  # Especifica as dimensoes da viewport
   glViewport(0, 0, w, h)
   # Calcula a correção de aspecto
   fAspect = w/h
-
+  # Especifica o volume de visualizacao
   EspecificaParametrosVisualizacao()
 
+# Funcoes para interagir com teclado e mouse
 def SpecialKeyboard(tecla, eixoX, eixoY):
   global angulo, rotX, rotY
+  # Realiza transformacoes geometricas de rotacao (gira o objeto ao redor do vetor eixoX, eixoY, eixoZ)
   
   if tecla == GLUT_KEY_RIGHT:
     glRotatef(rotX, 1, 0, 0)
@@ -332,13 +355,13 @@ def SpecialKeyboard(tecla, eixoX, eixoY):
 
   elif tecla == GLUT_KEY_DOWN:
     if(angulo<=150):
-      angulo +=5 # diminui zoom
+      angulo +=5 #diminui zoom
 
   elif tecla == GLUT_KEY_UP:
     if(angulo>=10):
-      angulo -=5 # aumenta zoom
-  EspecificaParametrosVisualizacao()
-  glutPostRedisplay()
+      angulo -=5 #aumenta zoom
+  EspecificaParametrosVisualizacao() # Modifica a visualizacao do usuario
+  glutPostRedisplay() # Marca para exibir novamente o plano da janela atual na proxima iteracao do glutMainLoop
 
 def teclado(tecla, eixoX, eixoY):
   global solAtivo, orbita, obsZ
@@ -362,9 +385,11 @@ def teclado(tecla, eixoX, eixoY):
       # Mostra o sistema solar sem as orbitas
       glutDisplayFunc(Desenha)
 
+  # Volta a matriz ao seu estado padrao (exemplo, comecar da origem em vez do estado atual)
+  # Visto que algumas transformacoes sao relativas ao estado atual da matriz (ex: rotacao e translacao)
   glLoadIdentity()
-  gluLookAt(obsX,obsY,obsZ, 0,0,0, 0,1,0)
-  glutPostRedisplay()
+  gluLookAt(obsX,obsY,obsZ, 0,0,0, 0,1,0) # Cria uma matriz de visualizacao derivada de um ponto de vista indicando centro da cena e vetor UP
+  glutPostRedisplay() # Marca para exibir novamente o plano da janela atual na proxima iteracao do glutMainLoop
 
 def GerenciaMouse(button, state, eixoX, eixoY):
   global obsX, obsY, obsZ, rotX, rotY, obsX_ini, obsY_ini, obsZ_ini, rotX_ini, rotY_ini, x_ini, y_ini, botao
@@ -413,32 +438,40 @@ def GerenciaMovim(eixoX, eixoY):
     obsY = obsY_ini - deltay/SENS_TRANSL
 
   PosicionaObservador()
-  glutPostRedisplay()
+  glutPostRedisplay() # Marca para exibir novamente o plano da janela atual na proxima iteracao do glutMainLoop
 
 def main():
+  # Inicializa a lib glut, com um contexto openGL especificando a versao e em modo de compatibilidade
+  # Sera utilizada para criar janelas, ler o teclado e o mouse
   glutInit(sys.argv)
   glutInitContextVersion(1,1) 
   glutInitContextProfile(GLUT_COMPATIBILITY_PROFILE)
 
-  glutInitDisplayMode(GLUT_RGB| GLUT_DOUBLE | GLUT_DEPTH)
+  # Inicia uma janela, definindo tamanho e posicao
+  glutInitDisplayMode(GLUT_RGB| GLUT_DOUBLE | GLUT_DEPTH) # Define janela com RGB, profundidade de dois buffers (um exibido e outro renderizando para trocar com o atual)
   glutInitWindowSize(1800,1200)
   glutInitWindowPosition(100,100)
   glutCreateWindow("Sistema Solar")
 
   # imprimeInstrucoes() <-> Metodo comentado
 
+  # Exibe na tela o retorno da funcao chamada
   glutDisplayFunc(Sistema_Solar_com_orbitas)
-
+  # ??? Qual o objetivo?
   glutReshapeFunc(Redimensiona)
-
+  # Define o retorno das teclas direcionais, teclado e mouse para a janela atual (callback gerado por evento)
   glutSpecialFunc(SpecialKeyboard)
   glutKeyboardFunc(teclado)
   glutMouseFunc(GerenciaMouse)
+  # Quando o mouse se move dentro da janela enquanto um ou mais botoes do mouse sao pressionados
   glutMotionFunc(GerenciaMovim)
 
+  # Inicializa ambiente (variaveis, texturas, fonte de luz e atualizacao de profundidade)
   Inicializa()
 
+  # Processamento em segundo plano ou animacao continua. Chama metodo de atualizar a janela atual
   glutIdleFunc(atualiza) 
+  # Renderiza a janela criada
   glutMainLoop() 
   return 0
 
