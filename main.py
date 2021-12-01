@@ -297,41 +297,46 @@ def Inicializa ():
   glEnable(GL_LIGHT0)  # Especifica que a fonte de luz tem cor padrao para luz (branco)
   glEnable(GL_DEPTH_TEST) # Atualiza o buffer de profundidade
 
+# Passos padrao da biblioteca
+# Especifica a posicao do observador e do alvo
 def PosicionaObservador():
-
+  # Especifica o sistema de coordenadas do modelo
   glMatrixMode(GL_MODELVIEW)
+  # Inicializa sistema de coordenadas do modelo
   glLoadIdentity()
 
-  # Posiciona e orienta o observador
+  # Posiciona e orienta o observador - transformacoes geometricas de translacao e rotacao em (x, y, z)
   glTranslatef(-obsX*0.5,-obsY*0.5,-obsZ*0.5)
   glRotatef(rotX,1,0,0)
   glRotatef(rotY,0,1,0)
   glRotatef(rotZ,0,0,1)
 
+# Funcao padrao da biblioteca para especificar o volume de visualizacao
 def EspecificaParametrosVisualizacao():
   global angulo
-  # Especifica sistema de coordenadas de projeção
+  # Especifica sistema de coordenadas de projecao
   glMatrixMode(GL_PROJECTION)
-  # Inicializa sistema de coordenadas de projeção
+  # Inicializa sistema de coordenadas de projecao
   glLoadIdentity()
-  # Especifica a projeção perspectiva(angulo,aspecto,zMin,zMax)
+  # Especifica a projecao perspectiva(angulo,aspecto,zMin,zMax)
   gluPerspective(angulo,fAspect,0.5,2000)
+  # Especifica a posicao do observador e do alvo
   PosicionaObservador()
 
+# Funcao padrao da biblioteca para alterar o tamanho da tela 
 def Redimensiona(w, h):
   global fAspect
-  # Para previnir uma divisão por zero
+  # Para previnir uma divisao por zero
   if ( h == 0 ):
     h = 1
 
-  # Especifica as dimensões da viewport
+  # Especifica as dimensoes da viewport
   glViewport(0, 0, w, h)
-
   # Calcula a correção de aspecto
   fAspect = w/h
 
   EspecificaParametrosVisualizacao()
-  
+
 # Funcoes para interagir com teclado e mouse
 def SpecialKeyboard(tecla, x, y):
   global angulo, rotX, rotY
