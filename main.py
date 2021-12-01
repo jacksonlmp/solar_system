@@ -297,6 +297,27 @@ def Inicializa ():
   glEnable(GL_LIGHT0)  # Especifica que a fonte de luz tem cor padrao para luz (branco)
   glEnable(GL_DEPTH_TEST) # Atualiza o buffer de profundidade
 
+def PosicionaObservador():
+
+  glMatrixMode(GL_MODELVIEW)
+  glLoadIdentity()
+
+  # Posiciona e orienta o observador
+  glTranslatef(-obsX*0.5,-obsY*0.5,-obsZ*0.5)
+  glRotatef(rotX,1,0,0)
+  glRotatef(rotY,0,1,0)
+  glRotatef(rotZ,0,0,1)
+
+def EspecificaParametrosVisualizacao():
+  global angulo
+  # Especifica sistema de coordenadas de projeção
+  glMatrixMode(GL_PROJECTION)
+  # Inicializa sistema de coordenadas de projeção
+  glLoadIdentity()
+  # Especifica a projeção perspectiva(angulo,aspecto,zMin,zMax)
+  gluPerspective(angulo,fAspect,0.5,2000)
+  PosicionaObservador()
+
 def Redimensiona(w, h):
   global fAspect
   # Para previnir uma divisão por zero
@@ -310,33 +331,12 @@ def Redimensiona(w, h):
   fAspect = w/h
 
   EspecificaParametrosVisualizacao()
-
-def EspecificaParametrosVisualizacao():
-  global angulo
-  # Especifica sistema de coordenadas de projeção
-  glMatrixMode(GL_PROJECTION)
-  # Inicializa sistema de coordenadas de projeção
-  glLoadIdentity()
-  # Especifica a projeção perspectiva(angulo,aspecto,zMin,zMax)
-  gluPerspective(angulo,fAspect,0.5,2000)
-  PosicionaObservador()
-
-def PosicionaObservador():
-
-  glMatrixMode(GL_MODELVIEW)
-  glLoadIdentity()
-
-  # Posiciona e orienta o observador
-  glTranslatef(-obsX*0.5,-obsY*0.5,-obsZ*0.5)
-  glRotatef(rotX,1,0,0)
-  glRotatef(rotY,0,1,0)
-  glRotatef(rotZ,0,0,1)
-
-
+  
 # Funcoes para interagir com teclado e mouse
 def SpecialKeyboard(tecla, x, y):
   global angulo, rotX, rotY
-
+  # Realiza transformacoes geometricas de rotacao (gira o objeto ao redor do vetor x, y, z)
+  
   if tecla == GLUT_KEY_RIGHT:
     glRotatef(rotX, 1, 0, 0)
     rotX += 1
@@ -352,8 +352,8 @@ def SpecialKeyboard(tecla, x, y):
   elif tecla == GLUT_KEY_UP:
     if(angulo>=10):
       angulo -=5 #aumenta zoom
-  EspecificaParametrosVisualizacao()
-  glutPostRedisplay()
+  EspecificaParametrosVisualizacao() # Modifica a visualizacao do usuario
+  glutPostRedisplay() # Marca para exibir novamente o plano da janela atual na proxima iteracao do glutMainLoop
 
 def teclado(tecla, x, y):
   global ativo, orbita, obsZ
@@ -449,7 +449,7 @@ def main():
   glutDisplayFunc(Sistema_Solar_com_orbitas)
   # ??? Qual o objetivo?
   glutReshapeFunc(Redimensiona)
-  # Define o retorno das teclas direcionais, teclado e mouse para a janela atual
+  # Define o retorno das teclas direcionais, teclado e mouse para a janela atual (callback gerado por evento)
   glutSpecialFunc(SpecialKeyboard)
   glutKeyboardFunc(teclado)
   glutMouseFunc(GerenciaMouse)
