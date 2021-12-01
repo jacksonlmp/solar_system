@@ -336,7 +336,8 @@ def PosicionaObservador():
 # Funcoes para interagir com teclado e mouse
 def SpecialKeyboard(tecla, x, y):
   global angulo, rotX, rotY
-
+  # Realiza transformacoes geometricas de rotacao (gira o objeto ao redor do vetor x, y, z)
+  
   if tecla == GLUT_KEY_RIGHT:
     glRotatef(rotX, 1, 0, 0)
     rotX += 1
@@ -352,8 +353,8 @@ def SpecialKeyboard(tecla, x, y):
   elif tecla == GLUT_KEY_UP:
     if(angulo>=10):
       angulo -=5 #aumenta zoom
-  EspecificaParametrosVisualizacao()
-  glutPostRedisplay()
+  EspecificaParametrosVisualizacao() # Modifica a visualizacao do usuario
+  glutPostRedisplay() # Marca para exibir novamente o plano da janela atual na proxima iteracao do glutMainLoop
 
 def teclado(tecla, x, y):
   global ativo, orbita, obsZ
@@ -449,7 +450,7 @@ def main():
   glutDisplayFunc(Sistema_Solar_com_orbitas)
   # ??? Qual o objetivo?
   glutReshapeFunc(Redimensiona)
-  # Define o retorno das teclas direcionais, teclado e mouse para a janela atual
+  # Define o retorno das teclas direcionais, teclado e mouse para a janela atual (callback gerado por evento)
   glutSpecialFunc(SpecialKeyboard)
   glutKeyboardFunc(teclado)
   glutMouseFunc(GerenciaMouse)
