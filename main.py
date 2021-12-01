@@ -8,13 +8,13 @@ from OpenGL.GLU import *
 from texture import load_images
 
 # Variaveis globais
-global angulo, fAspect, rotX, rotY, rotZ, obsX, obsY, obsZ, ativo
-global rotX_ini, rotY_ini, obsX_ini, obsY_ini, obsZ_ini, x_ini, y_ini, bot
+global angulo, fAspect, rotX, rotY, rotZ, obsX, obsY, obsZ, solAtivo
+global rotX_ini, rotY_ini, obsX_ini, obsY_ini, obsZ_ini, x_ini, y_ini, botao
 global tex0, tex1, tex2, tex3, tex4, tex5, tex6, tex7, tex8, tex9, tex10, tex11
 
-ativo = 1
+solAtivo = 1
 orbita = 1
-x, y, z = 0, 0, 0
+eixoX, eixoY, eixoZ = 0, 0, 0
 
 # Constantes utilizadas na interacao com o mouse
 SENS_ROT = 5.0
@@ -107,12 +107,12 @@ def desenha_planetas_com_Satelites(textura_planeta, textura_satelite, pos_y, pos
 
   glPopMatrix()
 
-def desenhaAnel(x, y):
+def desenhaAnel(eixoX, eixoY):
   glPushMatrix()
   glBegin(GL_LINE_LOOP)
   for i in range(360):
     rad = i*3.14/180
-    glVertex2f(math.cos(rad)*x,math.sin(rad)*y)
+    glVertex2f(math.cos(rad)*eixoX,math.sin(rad)*eixoY)
   glEnd()
   glPopMatrix()
 
@@ -132,11 +132,11 @@ def Sistema_Solar():
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
   # SOL
-  if(ativo==1):
+  if(solAtivo==1):
     # GLfloat
-    light_ambient = [x,y,z,1.0]
-    light_diffuse = [x,y,z,1.0]
-    light_specular = [x, y, z, 1.0]
+    light_ambient = [eixoX,eixoY,eixoZ,1.0]
+    light_diffuse = [eixoX,eixoY,eixoZ,1.0]
+    light_specular = [eixoX, eixoY, eixoZ, 1.0]
     light_position= [1.0, 0.0, 0.0, 1.0]
     
     # configura alguns parametros do modelo de iluminacao: MATERIAL
@@ -319,7 +319,7 @@ def Redimensiona(w, h):
 
   EspecificaParametrosVisualizacao()
 
-def SpecialKeyboard(tecla, x, y):
+def SpecialKeyboard(tecla, eixoX, eixoY):
   global angulo, rotX, rotY
   
   if tecla == GLUT_KEY_RIGHT:
@@ -340,14 +340,14 @@ def SpecialKeyboard(tecla, x, y):
   EspecificaParametrosVisualizacao()
   glutPostRedisplay()
 
-def teclado(tecla, x, y):
-  global ativo, orbita, obsZ
+def teclado(tecla, eixoX, eixoY):
+  global solAtivo, orbita, obsZ
 
   if tecla == chr(27): # Esc para sair
     sys.exit()
 
   elif tecla == b'l' or tecla == b'L': # Remove o Sol e toda a luz do sistema
-    ativo = not ativo
+    solAtivo = not solAtivo
     glutDisplayFunc(Sistema_Solar_com_orbitas)
 
   elif tecla == b'c' or tecla == b'C': # Centraliza no Sol - visao superior do sistema
@@ -366,48 +366,48 @@ def teclado(tecla, x, y):
   gluLookAt(obsX,obsY,obsZ, 0,0,0, 0,1,0)
   glutPostRedisplay()
 
-def GerenciaMouse(button, state, x, y):
-  global obsX, obsY, obsZ, rotX, rotY, obsX_ini, obsY_ini, obsZ_ini, rotX_ini, rotY_ini, x_ini, y_ini, bot
+def GerenciaMouse(button, state, eixoX, eixoY):
+  global obsX, obsY, obsZ, rotX, rotY, obsX_ini, obsY_ini, obsZ_ini, rotX_ini, rotY_ini, x_ini, y_ini, botao
 
   if (state==GLUT_DOWN):
     # Salva os parametros atuais
-    x_ini = x
-    y_ini = y
+    x_ini = eixoX
+    y_ini = eixoY
     obsX_ini = obsX
     obsY_ini = obsY
     obsZ_ini = obsZ
     rotX_ini = rotX
     rotY_ini = rotY
-    bot = button
+    botao = button
   else:
-    bot = -1
+    botao = -1
 
-def GerenciaMovim(x, y):
+def GerenciaMovim(eixoX, eixoY):
   global x_ini, y_ini, rotX, rotY, obsX, obsY, obsZ
 
   # Botao esquerdo do mouse
-  if(bot==GLUT_LEFT_BUTTON):
+  if(botao==GLUT_LEFT_BUTTON):
     # Calcula diferenças
-    deltax = x_ini - x
-    deltay = y_ini - y
+    deltax = x_ini - eixoX
+    deltay = y_ini - eixoY
     # E modifica angulos
     rotY = rotY_ini - deltax/SENS_ROT
     rotX = rotX_ini - deltay/SENS_ROT
 
   # Botao direito do mouse
-  elif(bot==GLUT_RIGHT_BUTTON):
-    deltax = x_ini - x
-    deltay = y_ini - y
+  elif(botao==GLUT_RIGHT_BUTTON):
+    deltax = x_ini - eixoX
+    deltay = y_ini - eixoY
     # Calcula diferença
     deltaz = deltax - deltay
     # E modifica distancia do observador
     obsZ = obsZ_ini + deltaz/SENS_OBS
 
   # Botao do meio
-  elif(bot==GLUT_MIDDLE_BUTTON):
+  elif(botao==GLUT_MIDDLE_BUTTON):
     # Calcula diferencas
-    deltax = x_ini - x
-    deltay = y_ini - y
+    deltax = x_ini - eixoX
+    deltay = y_ini - eixoY
     # E modifica posicoes
     obsX = obsX_ini + deltax/SENS_TRANSL
     obsY = obsY_ini - deltay/SENS_TRANSL

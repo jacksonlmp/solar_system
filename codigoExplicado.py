@@ -8,13 +8,13 @@ from OpenGL.GLU import *
 from texture import load_images
 
 # Variaveis globais
-global angulo, fAspect, rotX, rotY, rotZ, obsX, obsY, obsZ, ativo
-global rotX_ini, rotY_ini, obsX_ini, obsY_ini, obsZ_ini, x_ini, y_ini, bot
+global angulo, fAspect, rotX, rotY, rotZ, obsX, obsY, obsZ, solAtivo
+global rotX_ini, rotY_ini, obsX_ini, obsY_ini, obsZ_ini, x_ini, y_ini, botao
 global tex0, tex1, tex2, tex3, tex4, tex5, tex6, tex7, tex8, tex9, tex10, tex11
 
-ativo = 1
+solAtivo = 1
 orbita = 1
-x, y, z = 0, 0, 0
+eixoX, eixoY, eixoZ = 0, 0, 0
 
 # Constantes utilizadas na interacao com o mouse
 SENS_ROT = 5.0
@@ -107,7 +107,7 @@ def desenha_planetas_com_Satelites(textura_planeta, textura_satelite, pos_y, pos
 
   glPopMatrix()
 
-def desenhaAnel(x, y):
+def desenhaAnel(eixoX, eixoY):
   # Insere a matriz de transformacoes corrente na pilha para realizar as transformacoes
   # Serve para restringir o efeito das transformacoes ao escopo que desejamos ou lembrar da sequencia de transformacoes realizadas
   glPushMatrix()
@@ -116,7 +116,7 @@ def desenhaAnel(x, y):
   glBegin(GL_LINE_LOOP)
   for i in range(360):
     rad = i*3.14/180
-    glVertex2f(math.cos(rad)*x,math.sin(rad)*y) # Especifica um vertice
+    glVertex2f(math.cos(rad)*eixoX,math.sin(rad)*eixoY) # Especifica um vertice
   glEnd()
   # Retira a matriz do topo da pilha e torna esta ultima a matriz de transformacao corrente
   glPopMatrix()
@@ -138,11 +138,11 @@ def Sistema_Solar():
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
   # SOL
-  if(ativo==1):
+  if(solAtivo==1):
     # GLfloat
-    light_ambient = [x,y,z,1.0]
-    light_diffuse = [x,y,z,1.0]
-    light_specular = [x, y, z, 1.0]
+    light_ambient = [eixoX,eixoY,eixoZ,1.0]
+    light_diffuse = [eixoX,eixoY,eixoZ,1.0]
+    light_specular = [eixoX, eixoY, eixoZ, 1.0]
     light_position= [1.0, 0.0, 0.0, 1.0]
     
     # configura alguns parametros do modelo de iluminacao: MATERIAL
@@ -308,7 +308,7 @@ def PosicionaObservador():
   # Inicializa sistema de coordenadas do modelo
   glLoadIdentity()
 
-  # Posiciona e orienta o observador - transformacoes geometricas de translacao e rotacao em (x, y, z)
+  # Posiciona e orienta o observador - transformacoes geometricas de translacao e rotacao em (eixoX, eixoY, eixoZ)
   glTranslatef(-obsX*0.5,-obsY*0.5,-obsZ*0.5)
   glRotatef(rotX,1,0,0)
   glRotatef(rotY,0,1,0)
@@ -341,9 +341,9 @@ def Redimensiona(w, h):
   EspecificaParametrosVisualizacao()
 
 # Funcoes para interagir com teclado e mouse
-def SpecialKeyboard(tecla, x, y):
+def SpecialKeyboard(tecla, eixoX, eixoY):
   global angulo, rotX, rotY
-  # Realiza transformacoes geometricas de rotacao (gira o objeto ao redor do vetor x, y, z)
+  # Realiza transformacoes geometricas de rotacao (gira o objeto ao redor do vetor eixoX, eixoY, eixoZ)
   
   if tecla == GLUT_KEY_RIGHT:
     glRotatef(rotX, 1, 0, 0)
@@ -363,14 +363,14 @@ def SpecialKeyboard(tecla, x, y):
   EspecificaParametrosVisualizacao() # Modifica a visualizacao do usuario
   glutPostRedisplay() # Marca para exibir novamente o plano da janela atual na proxima iteracao do glutMainLoop
 
-def teclado(tecla, x, y):
-  global ativo, orbita, obsZ
+def teclado(tecla, eixoX, eixoY):
+  global solAtivo, orbita, obsZ
 
   if tecla == chr(27): # Esc para sair
     sys.exit()
 
   elif tecla == b'l' or tecla == b'L': # Remove o Sol e toda a luz do sistema
-    ativo = not ativo
+    solAtivo = not solAtivo
     glutDisplayFunc(Sistema_Solar_com_orbitas)
 
   elif tecla == b'c' or tecla == b'C': # Centraliza no Sol - visao superior do sistema
@@ -385,58 +385,60 @@ def teclado(tecla, x, y):
       # Mostra o sistema solar sem as orbitas
       glutDisplayFunc(Desenha)
 
+  # Volta a matriz ao seu estado padrao (exemplo, comecar da origem em vez do estado atual)
+  # Visto que algumas transformacoes sao relativas ao estado atual da matriz (ex: rotacao e translacao)
   glLoadIdentity()
-  gluLookAt(obsX,obsY,obsZ, 0,0,0, 0,1,0)
-  glutPostRedisplay()
+  gluLookAt(obsX,obsY,obsZ, 0,0,0, 0,1,0) # Cria uma matriz de visualizacao derivada de um ponto de vista indicando centro da cena e vetor UP
+  glutPostRedisplay() # Marca para exibir novamente o plano da janela atual na proxima iteracao do glutMainLoop
 
-def GerenciaMouse(button, state, x, y):
-  global obsX, obsY, obsZ, rotX, rotY, obsX_ini, obsY_ini, obsZ_ini, rotX_ini, rotY_ini, x_ini, y_ini, bot
+def GerenciaMouse(button, state, eixoX, eixoY):
+  global obsX, obsY, obsZ, rotX, rotY, obsX_ini, obsY_ini, obsZ_ini, rotX_ini, rotY_ini, x_ini, y_ini, botao
 
   if (state==GLUT_DOWN):
     # Salva os parametros atuais
-    x_ini = x
-    y_ini = y
+    x_ini = eixoX
+    y_ini = eixoY
     obsX_ini = obsX
     obsY_ini = obsY
     obsZ_ini = obsZ
     rotX_ini = rotX
     rotY_ini = rotY
-    bot = button
+    botao = button
   else:
-    bot = -1
+    botao = -1
 
-def GerenciaMovim(x, y):
+def GerenciaMovim(eixoX, eixoY):
   global x_ini, y_ini, rotX, rotY, obsX, obsY, obsZ
 
   # Botao esquerdo do mouse
-  if(bot==GLUT_LEFT_BUTTON):
+  if(botao==GLUT_LEFT_BUTTON):
     # Calcula diferenças
-    deltax = x_ini - x
-    deltay = y_ini - y
+    deltax = x_ini - eixoX
+    deltay = y_ini - eixoY
     # E modifica angulos
     rotY = rotY_ini - deltax/SENS_ROT
     rotX = rotX_ini - deltay/SENS_ROT
 
   # Botao direito do mouse
-  elif(bot==GLUT_RIGHT_BUTTON):
-    deltax = x_ini - x
-    deltay = y_ini - y
+  elif(botao==GLUT_RIGHT_BUTTON):
+    deltax = x_ini - eixoX
+    deltay = y_ini - eixoY
     # Calcula diferença
     deltaz = deltax - deltay
     # E modifica distancia do observador
     obsZ = obsZ_ini + deltaz/SENS_OBS
 
   # Botao do meio
-  elif(bot==GLUT_MIDDLE_BUTTON):
+  elif(botao==GLUT_MIDDLE_BUTTON):
     # Calcula diferencas
-    deltax = x_ini - x
-    deltay = y_ini - y
+    deltax = x_ini - eixoX
+    deltay = y_ini - eixoY
     # E modifica posicoes
     obsX = obsX_ini + deltax/SENS_TRANSL
     obsY = obsY_ini - deltay/SENS_TRANSL
 
   PosicionaObservador()
-  glutPostRedisplay()
+  glutPostRedisplay() # Marca para exibir novamente o plano da janela atual na proxima iteracao do glutMainLoop
 
 def main():
   # Inicializa a lib glut, com um contexto openGL especificando a versao e em modo de compatibilidade
