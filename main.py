@@ -14,7 +14,6 @@ global tex0, tex1, tex2, tex3, tex4, tex5, tex6, tex7, tex8, tex9, tex10, tex11
 
 ativo = 1
 orbita = 1
-p = 1.0
 x, y, z = 0, 0, 0
 
 # Constantes utilizadas na interacao com o mouse
@@ -109,13 +108,17 @@ def desenha_planetas_com_Satelites(textura_planeta, textura_satelite, pos_y, pos
   glPopMatrix()
 
 def desenhaAnel(x, y):
+  # Insere a matriz de transformacoes corrente na pilha para realizar as transformacoes
+  # Serve para restringir o efeito das transformacoes ao escopo que desejamos ou lembrar da sequencia de transformacoes realizadas
   glPushMatrix()
+  # glBegin Inicia uma lista de vertices, e o argumento determina qual objeto sera desenhado
+  # GL_LINE_LOOP exibe uma sequencia de linhas conectando os pontos definidos por glVertex e ao final liga o primeiro como ultimo ponto
   glBegin(GL_LINE_LOOP)
-
   for i in range(360):
     rad = i*3.14/180
-    glVertex2f(math.cos(rad)*x,math.sin(rad)*y)
+    glVertex2f(math.cos(rad)*x,math.sin(rad)*y) # Especifica um vertice
   glEnd()
+  # Retira a matriz do topo da pilha e torna esta ultima a matriz de transformacao corrente
   glPopMatrix()
 
 def Desenha():
@@ -334,7 +337,7 @@ def Redimensiona(w, h):
   glViewport(0, 0, w, h)
   # Calcula a correção de aspecto
   fAspect = w/h
-
+  # Especifica o volume de visualizacao
   EspecificaParametrosVisualizacao()
 
 # Funcoes para interagir com teclado e mouse
