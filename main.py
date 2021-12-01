@@ -297,6 +297,27 @@ def Inicializa ():
   glEnable(GL_LIGHT0)  # Especifica que a fonte de luz tem cor padrao para luz (branco)
   glEnable(GL_DEPTH_TEST) # Atualiza o buffer de profundidade
 
+def PosicionaObservador():
+
+  glMatrixMode(GL_MODELVIEW)
+  glLoadIdentity()
+
+  # Posiciona e orienta o observador
+  glTranslatef(-obsX*0.5,-obsY*0.5,-obsZ*0.5)
+  glRotatef(rotX,1,0,0)
+  glRotatef(rotY,0,1,0)
+  glRotatef(rotZ,0,0,1)
+
+def EspecificaParametrosVisualizacao():
+  global angulo
+  # Especifica sistema de coordenadas de projeção
+  glMatrixMode(GL_PROJECTION)
+  # Inicializa sistema de coordenadas de projeção
+  glLoadIdentity()
+  # Especifica a projeção perspectiva(angulo,aspecto,zMin,zMax)
+  gluPerspective(angulo,fAspect,0.5,2000)
+  PosicionaObservador()
+
 def Redimensiona(w, h):
   global fAspect
   # Para previnir uma divisão por zero
@@ -310,29 +331,7 @@ def Redimensiona(w, h):
   fAspect = w/h
 
   EspecificaParametrosVisualizacao()
-
-def EspecificaParametrosVisualizacao():
-  global angulo
-  # Especifica sistema de coordenadas de projeção
-  glMatrixMode(GL_PROJECTION)
-  # Inicializa sistema de coordenadas de projeção
-  glLoadIdentity()
-  # Especifica a projeção perspectiva(angulo,aspecto,zMin,zMax)
-  gluPerspective(angulo,fAspect,0.5,2000)
-  PosicionaObservador()
-
-def PosicionaObservador():
-
-  glMatrixMode(GL_MODELVIEW)
-  glLoadIdentity()
-
-  # Posiciona e orienta o observador
-  glTranslatef(-obsX*0.5,-obsY*0.5,-obsZ*0.5)
-  glRotatef(rotX,1,0,0)
-  glRotatef(rotY,0,1,0)
-  glRotatef(rotZ,0,0,1)
-
-
+  
 # Funcoes para interagir com teclado e mouse
 def SpecialKeyboard(tecla, x, y):
   global angulo, rotX, rotY
