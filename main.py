@@ -382,7 +382,7 @@ def GerenciaMouse(button, state, eixoX, eixoY):
   else:
     botao = -1
 
-def GerenciaMovim(eixoX, eixoY):
+def GerenciaMovimento(eixoX, eixoY):
   global x_ini, y_ini, rotX, rotY, obsX, obsY, obsZ
 
   # Botao esquerdo do mouse
@@ -402,15 +402,6 @@ def GerenciaMovim(eixoX, eixoY):
     deltaz = deltax - deltay
     # E modifica distancia do observador
     obsZ = obsZ_ini + deltaz/SENS_OBS
-
-  # Botao do meio
-  elif(botao==GLUT_MIDDLE_BUTTON):
-    # Calcula diferencas
-    deltax = x_ini - eixoX
-    deltay = y_ini - eixoY
-    # E modifica posicoes
-    obsX = obsX_ini + deltax/SENS_TRANSL
-    obsY = obsY_ini - deltay/SENS_TRANSL
 
   PosicionaObservador()
   glutPostRedisplay()
@@ -434,7 +425,7 @@ def main():
   glutSpecialFunc(SpecialKeyboard)
   glutKeyboardFunc(teclado)
   glutMouseFunc(GerenciaMouse)
-  glutMotionFunc(GerenciaMovim)
+  glutMotionFunc(GerenciaMovimento)
 
   Inicializa()
 

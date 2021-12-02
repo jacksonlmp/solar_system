@@ -363,6 +363,7 @@ def SpecialKeyboard(tecla, eixoX, eixoY):
   EspecificaParametrosVisualizacao() # Modifica a visualizacao do usuario
   glutPostRedisplay() # Marca para exibir novamente o plano da janela atual na proxima iteracao do glutMainLoop
 
+# Verifica se alguma tecla foi pressionada (com excecao das direcionais)
 def teclado(tecla, eixoX, eixoY):
   global solAtivo, orbita, obsZ
 
@@ -371,7 +372,7 @@ def teclado(tecla, eixoX, eixoY):
 
   elif tecla == b'l' or tecla == b'L': # Remove o Sol e toda a luz do sistema
     solAtivo = not solAtivo
-    glutDisplayFunc(Sistema_Solar_com_orbitas)
+    glutDisplayFunc(Sistema_Solar_com_orbitas) # Exibe na tela o retorno da funcao chamada
 
   elif tecla == b'c' or tecla == b'C': # Centraliza no Sol - visao superior do sistema
     obsZ = 50
@@ -380,10 +381,10 @@ def teclado(tecla, eixoX, eixoY):
     orbita = not orbita
 
     if(orbita==True):
-      glutDisplayFunc(Sistema_Solar_com_orbitas)
+      glutDisplayFunc(Sistema_Solar_com_orbitas) # Exibe na tela o retorno da funcao chamada
     else:
       # Mostra o sistema solar sem as orbitas
-      glutDisplayFunc(Desenha)
+      glutDisplayFunc(Desenha) # Exibe na tela o retorno da funcao chamada
 
   # Volta a matriz ao seu estado padrao (exemplo, comecar da origem em vez do estado atual)
   # Visto que algumas transformacoes sao relativas ao estado atual da matriz (ex: rotacao e translacao)
@@ -391,11 +392,12 @@ def teclado(tecla, eixoX, eixoY):
   gluLookAt(obsX,obsY,obsZ, 0,0,0, 0,1,0) # Cria uma matriz de visualizacao derivada de um ponto de vista indicando centro da cena e vetor UP
   glutPostRedisplay() # Marca para exibir novamente o plano da janela atual na proxima iteracao do glutMainLoop
 
+# Gerencia os eventos do mouse, se botao foi pressionado ou nao
 def GerenciaMouse(button, state, eixoX, eixoY):
   global obsX, obsY, obsZ, rotX, rotY, obsX_ini, obsY_ini, obsZ_ini, rotX_ini, rotY_ini, x_ini, y_ini, botao
 
+  # Se foi pressionado, salva os parametros atuais
   if (state==GLUT_DOWN):
-    # Salva os parametros atuais
     x_ini = eixoX
     y_ini = eixoY
     obsX_ini = obsX
@@ -407,7 +409,7 @@ def GerenciaMouse(button, state, eixoX, eixoY):
   else:
     botao = -1
 
-def GerenciaMovim(eixoX, eixoY):
+def GerenciaMovimento(eixoX, eixoY):
   global x_ini, y_ini, rotX, rotY, obsX, obsY, obsZ
 
   # Botao esquerdo do mouse
@@ -428,16 +430,7 @@ def GerenciaMovim(eixoX, eixoY):
     # E modifica distancia do observador
     obsZ = obsZ_ini + deltaz/SENS_OBS
 
-  # Botao do meio
-  elif(botao==GLUT_MIDDLE_BUTTON):
-    # Calcula diferencas
-    deltax = x_ini - eixoX
-    deltay = y_ini - eixoY
-    # E modifica posicoes
-    obsX = obsX_ini + deltax/SENS_TRANSL
-    obsY = obsY_ini - deltay/SENS_TRANSL
-
-  PosicionaObservador()
+  PosicionaObservador() # Padrao da funcao, ja que altera a visualizacao (angulo ou distancia)
   glutPostRedisplay() # Marca para exibir novamente o plano da janela atual na proxima iteracao do glutMainLoop
 
 def main():
@@ -464,7 +457,7 @@ def main():
   glutKeyboardFunc(teclado)
   glutMouseFunc(GerenciaMouse)
   # Quando o mouse se move dentro da janela enquanto um ou mais botoes do mouse sao pressionados
-  glutMotionFunc(GerenciaMovim)
+  glutMotionFunc(GerenciaMovimento)
 
   # Inicializa ambiente (variaveis, texturas, fonte de luz e atualizacao de profundidade)
   Inicializa()
