@@ -26,6 +26,8 @@ def Desenha_planeta(textura, pos_y, pos_x, escala, diametro, raio):
   t = glutGet(GLUT_ELAPSED_TIME) / 1000.0
   a = t*2
 
+  # Insere a matriz de transformacoes corrente na pilha para realizar as transformacoes
+  # Serve para restringir o efeito das transformacoes ao escopo que desejamos ou lembrar da sequencia de transformacoes realizadas
   glPushMatrix()
   glRasterPos2f(0,-pos_y)
   # glutBitmapString(GLUT_BITMAP_9_BY_15, planeta)
@@ -40,13 +42,15 @@ def Desenha_planeta(textura, pos_y, pos_x, escala, diametro, raio):
   glRotated(a * 20, 0, 0, 1)
   gluSphere(obj, diametro, 25, 25)
   glDisable(GL_TEXTURE_2D)
-  glPopMatrix()
+  glPopMatrix() # Fim do push
 
 def Desenha_planetas_com_Satelites_e_Aneis(textura_planeta, textura_satelite, textura_aneis, pos_y, pos_x, escala, diametro1, diametro2, raio, raio_lua):
 
   t = glutGet(GLUT_ELAPSED_TIME) / 1000.0
   a = t * 2
 
+  # Insere a matriz de transformacoes corrente na pilha para realizar as transformacoes
+  # Serve para restringir o efeito das transformacoes ao escopo que desejamos ou lembrar da sequencia de transformacoes realizadas
   glPushMatrix()
   glRasterPos2f(0,-pos_y)
   # glutBitmapString(GLUT_BITMAP_9_BY_15, planeta)
@@ -75,12 +79,14 @@ def Desenha_planetas_com_Satelites_e_Aneis(textura_planeta, textura_satelite, te
   gluSphere(obj,diametro2,50,50)
   glDisable(GL_TEXTURE_2D)
 
-  glPopMatrix()
+  glPopMatrix() # Fim do push
 
 def desenha_planetas_com_Satelites(textura_planeta, textura_satelite, pos_y, pos_x, escala, diametro1, diametro2, raio, raio_lua):
   t = glutGet(GLUT_ELAPSED_TIME) / 1000.0
   a = t*2
 
+  # Insere a matriz de transformacoes corrente na pilha para realizar as transformacoes
+  # Serve para restringir o efeito das transformacoes ao escopo que desejamos ou lembrar da sequencia de transformacoes realizadas
   glPushMatrix()
   glRasterPos2f(0,-pos_y)
   # glutBitmapString(GLUT_BITMAP_9_BY_15, planeta)
@@ -105,7 +111,7 @@ def desenha_planetas_com_Satelites(textura_planeta, textura_satelite, pos_y, pos
   gluSphere(obj,diametro2,50,50)
   glDisable(GL_TEXTURE_2D)
 
-  glPopMatrix()
+  glPopMatrix() # Fim do push
 
 def desenhaAnel(eixoX, eixoY):
   # Insere a matriz de transformacoes corrente na pilha para realizar as transformacoes
@@ -117,9 +123,9 @@ def desenhaAnel(eixoX, eixoY):
   for i in range(360):
     rad = i*3.14/180
     glVertex2f(math.cos(rad)*eixoX,math.sin(rad)*eixoY) # Especifica um vertice
-  glEnd()
+  glEnd() # Fim do begin
   # Retira a matriz do topo da pilha e torna esta ultima a matriz de transformacao corrente
-  glPopMatrix()
+  glPopMatrix() # Fim do push
 
 def Desenha():
   glDrawBuffer(GL_BACK)
@@ -178,7 +184,7 @@ def Sistema_Solar():
     glRotated(a*7, 0, 0, 1)
     glScalef(3,3,3)
     gluSphere(qobj,1,25,25)
-    glPopMatrix()
+    glPopMatrix() # Fim do push
     glDisable(GL_TEXTURE_2D)
   else:
     glEnable(GL_LIGHTING)
@@ -216,19 +222,26 @@ def Sistema_Solar():
   # glutBitmapString(GLUT_BITMAP_9_BY_15, "Cinturao de Asteroides")
   # desenhaAsteroide(10,10)
 
+# Cria uma orbita
 def Desenha_Orbita(pos_y, pos_x):
+  # Insere a matriz de transformacoes corrente na pilha para realizar as transformacoes
+  # Serve para restringir o efeito das transformacoes ao escopo que desejamos ou lembrar da sequencia de transformacoes realizadas
   glPushMatrix()
-  glTranslated(0, -pos_y, 0)
+  glTranslated(0, -pos_y, 0) # Produz uma translacao em (x, y, z)
+   # glBegin Inicia uma lista de vertices, e o argumento determina qual objeto sera desenhado
+  # GL_LINE_LOOP exibe uma sequencia de linhas conectando os pontos definidos por glVertex e ao final liga o primeiro como ultimo ponto
   glBegin(GL_LINE_LOOP)
   for i in range(100): # Desenha a linha da orbita, a variavel i vai juntando cada linha em uma circunferencia
     glVertex2f(
       pos_x * math.cos(2.0 * 3.14 * i / 100),
       pos_y + pos_y * math.sin(2.0 * 3.14 * i / 100)
-    )
+    ) # Especifica um vertice
 
-  glEnd()
-  glPopMatrix()
+  glEnd() # Fim do begin
+  glPopMatrix() # Fim do push
 
+
+# Chama a funcao para criar as orbitas de cada planeta
 def mostraOrbitas():
 
   # MERCURIO - Diametro: 4.879,4 km
