@@ -21,27 +21,27 @@ SENS_ROT = 5.0
 SENS_OBS = 10.0
 SENS_TRANSL = 10.0
 
-
+# Modela o objeto esferico, aplica a textura, rotaciona e translada
 def Desenha_planeta(textura, pos_y, pos_x, escala, diametro, raio):
   t = glutGet(GLUT_ELAPSED_TIME) / 1000.0
   a = t*2
+  # t eh o numero de segundos desde que glutInit foi chamado
 
   # Insere a matriz de transformacoes corrente na pilha para realizar as transformacoes
   # Serve para restringir o efeito das transformacoes ao escopo que desejamos ou lembrar da sequencia de transformacoes realizadas
   glPushMatrix()
-  glRasterPos2f(0,-pos_y)
-  # glutBitmapString(GLUT_BITMAP_9_BY_15, planeta)
-  glTranslated(0, -pos_y, 0)
-  # Movimento de Translação
+  glTranslated(0, -pos_y, 0) # produz a matriz de translacao especificada por (x, y, z)
+  
+  # Movimento de Translacao - transf. geometrica que move todas as coordenadas dos objetos ao longo dos eixos coordenados
   glTranslatef((pos_x * math.cos(2.0 * 3.14 * a*raio / 100)),(pos_y +pos_y * math.sin(2.0 * 3.14 * a*raio/ 100)), 0)
-  obj = gluNewQuadric()
-  gluQuadricTexture(obj, GL_TRUE)
-  glEnable(GL_TEXTURE_2D)
-  glBindTexture(GL_TEXTURE_2D, textura)
-  glScalef(escala,escala, escala)
-  glRotated(a * 20, 0, 0, 1)
-  gluSphere(obj, diametro, 25, 25)
-  glDisable(GL_TEXTURE_2D)
+  obj = gluNewQuadric() # Estrutura de dado para modelar uma quadrica (esfera, cone, cilindro, disco...)
+  gluQuadricTexture(obj, GL_TRUE) # Especifica que o objeto deve ser texturizado
+  glEnable(GL_TEXTURE_2D)  # Habilita o recurso da textura para poder alterar
+  glBindTexture(GL_TEXTURE_2D, textura) # Cria uma textura nomeada, para usar no programa 
+  glScalef(escala,escala, escala) # altera a escala do objeto ao longo dos eixos
+  glRotated(a * 20, 0, 0, 1) # calcula uma matriz que executa uma rotacao
+  gluSphere(obj, diametro, 25, 25)  # desenha uma esfera
+  glDisable(GL_TEXTURE_2D) # Desabilita alteracoes em textura
   glPopMatrix() # Fim do push
 
 def Desenha_planetas_com_Satelites_e_Aneis(textura_planeta, textura_satelite, textura_aneis, pos_y, pos_x, escala, diametro1, diametro2, raio, raio_lua):
