@@ -21,32 +21,36 @@ SENS_ROT = 5.0
 SENS_OBS = 10.0
 SENS_TRANSL = 10.0
 
-
+# Modela o objeto esferico, aplica a textura, rotaciona e translada
 def Desenha_planeta(textura, pos_y, pos_x, escala, diametro, raio):
   t = glutGet(GLUT_ELAPSED_TIME) / 1000.0
   a = t*2
+  # t eh o numero de segundos desde que glutInit foi chamado
 
+  # Insere a matriz de transformacoes corrente na pilha para realizar as transformacoes
+  # Serve para restringir o efeito das transformacoes ao escopo que desejamos ou lembrar da sequencia de transformacoes realizadas
   glPushMatrix()
-  glRasterPos2f(0,-pos_y)
-  # glutBitmapString(GLUT_BITMAP_9_BY_15, planeta)
-  glTranslated(0, -pos_y, 0)
-  # Movimento de Translação
+  glTranslated(0, -pos_y, 0) # produz a matriz de translacao especificada por (x, y, z)
+  
+  # Movimento de Translacao - transf. geometrica que move todas as coordenadas dos objetos ao longo dos eixos coordenados
   glTranslatef((pos_x * math.cos(2.0 * 3.14 * a*raio / 100)),(pos_y +pos_y * math.sin(2.0 * 3.14 * a*raio/ 100)), 0)
-  obj = gluNewQuadric()
-  gluQuadricTexture(obj, GL_TRUE)
-  glEnable(GL_TEXTURE_2D)
-  glBindTexture(GL_TEXTURE_2D, textura)
-  glScalef(escala,escala, escala)
-  glRotated(a * 20, 0, 0, 1)
-  gluSphere(obj, diametro, 25, 25)
-  glDisable(GL_TEXTURE_2D)
-  glPopMatrix()
+  obj = gluNewQuadric() # Estrutura de dado para modelar uma quadrica (esfera, cone, cilindro, disco...)
+  gluQuadricTexture(obj, GL_TRUE) # Especifica que o objeto deve ser texturizado
+  glEnable(GL_TEXTURE_2D)  # Habilita o recurso da textura para poder alterar
+  glBindTexture(GL_TEXTURE_2D, textura) # Cria uma textura nomeada, para usar no programa 
+  glScalef(escala,escala, escala) # altera a escala do objeto ao longo dos eixos
+  glRotated(a * 20, 0, 0, 1) # calcula uma matriz que executa uma rotacao
+  gluSphere(obj, diametro, 25, 25)  # desenha uma esfera
+  glDisable(GL_TEXTURE_2D) # Desabilita alteracoes em textura
+  glPopMatrix() # Fim do push
 
 def Desenha_planetas_com_Satelites_e_Aneis(textura_planeta, textura_satelite, textura_aneis, pos_y, pos_x, escala, diametro1, diametro2, raio, raio_lua):
 
   t = glutGet(GLUT_ELAPSED_TIME) / 1000.0
   a = t * 2
 
+  # Insere a matriz de transformacoes corrente na pilha para realizar as transformacoes
+  # Serve para restringir o efeito das transformacoes ao escopo que desejamos ou lembrar da sequencia de transformacoes realizadas
   glPushMatrix()
   glRasterPos2f(0,-pos_y)
   # glutBitmapString(GLUT_BITMAP_9_BY_15, planeta)
@@ -75,12 +79,14 @@ def Desenha_planetas_com_Satelites_e_Aneis(textura_planeta, textura_satelite, te
   gluSphere(obj,diametro2,50,50)
   glDisable(GL_TEXTURE_2D)
 
-  glPopMatrix()
+  glPopMatrix() # Fim do push
 
 def desenha_planetas_com_Satelites(textura_planeta, textura_satelite, pos_y, pos_x, escala, diametro1, diametro2, raio, raio_lua):
   t = glutGet(GLUT_ELAPSED_TIME) / 1000.0
   a = t*2
 
+  # Insere a matriz de transformacoes corrente na pilha para realizar as transformacoes
+  # Serve para restringir o efeito das transformacoes ao escopo que desejamos ou lembrar da sequencia de transformacoes realizadas
   glPushMatrix()
   glRasterPos2f(0,-pos_y)
   # glutBitmapString(GLUT_BITMAP_9_BY_15, planeta)
@@ -105,7 +111,7 @@ def desenha_planetas_com_Satelites(textura_planeta, textura_satelite, pos_y, pos
   gluSphere(obj,diametro2,50,50)
   glDisable(GL_TEXTURE_2D)
 
-  glPopMatrix()
+  glPopMatrix() # Fim do push
 
 def desenhaAnel(eixoX, eixoY):
   # Insere a matriz de transformacoes corrente na pilha para realizar as transformacoes
@@ -117,9 +123,9 @@ def desenhaAnel(eixoX, eixoY):
   for i in range(360):
     rad = i*3.14/180
     glVertex2f(math.cos(rad)*eixoX,math.sin(rad)*eixoY) # Especifica um vertice
-  glEnd()
+  glEnd() # Fim do begin
   # Retira a matriz do topo da pilha e torna esta ultima a matriz de transformacao corrente
-  glPopMatrix()
+  glPopMatrix() # Fim do push
 
 def Desenha():
   glDrawBuffer(GL_BACK)
@@ -178,7 +184,7 @@ def Sistema_Solar():
     glRotated(a*7, 0, 0, 1)
     glScalef(3,3,3)
     gluSphere(qobj,1,25,25)
-    glPopMatrix()
+    glPopMatrix() # Fim do push
     glDisable(GL_TEXTURE_2D)
   else:
     glEnable(GL_LIGHTING)
@@ -216,19 +222,26 @@ def Sistema_Solar():
   # glutBitmapString(GLUT_BITMAP_9_BY_15, "Cinturao de Asteroides")
   # desenhaAsteroide(10,10)
 
+# Cria uma orbita
 def Desenha_Orbita(pos_y, pos_x):
+  # Insere a matriz de transformacoes corrente na pilha para realizar as transformacoes
+  # Serve para restringir o efeito das transformacoes ao escopo que desejamos ou lembrar da sequencia de transformacoes realizadas
   glPushMatrix()
-  glTranslated(0, -pos_y, 0)
+  glTranslated(0, -pos_y, 0) # Produz uma translacao em (x, y, z)
+   # glBegin Inicia uma lista de vertices, e o argumento determina qual objeto sera desenhado
+  # GL_LINE_LOOP exibe uma sequencia de linhas conectando os pontos definidos por glVertex e ao final liga o primeiro como ultimo ponto
   glBegin(GL_LINE_LOOP)
   for i in range(100): # Desenha a linha da orbita, a variavel i vai juntando cada linha em uma circunferencia
     glVertex2f(
       pos_x * math.cos(2.0 * 3.14 * i / 100),
       pos_y + pos_y * math.sin(2.0 * 3.14 * i / 100)
-    )
+    ) # Especifica um vertice
 
-  glEnd()
-  glPopMatrix()
+  glEnd() # Fim do begin
+  glPopMatrix() # Fim do push
 
+
+# Chama a funcao para criar as orbitas de cada planeta
 def mostraOrbitas():
 
   # MERCURIO - Diametro: 4.879,4 km
@@ -363,6 +376,7 @@ def SpecialKeyboard(tecla, eixoX, eixoY):
   EspecificaParametrosVisualizacao() # Modifica a visualizacao do usuario
   glutPostRedisplay() # Marca para exibir novamente o plano da janela atual na proxima iteracao do glutMainLoop
 
+# Verifica se alguma tecla foi pressionada (com excecao das direcionais)
 def teclado(tecla, eixoX, eixoY):
   global solAtivo, orbita, obsZ
 
@@ -371,7 +385,7 @@ def teclado(tecla, eixoX, eixoY):
 
   elif tecla == b'l' or tecla == b'L': # Remove o Sol e toda a luz do sistema
     solAtivo = not solAtivo
-    glutDisplayFunc(Sistema_Solar_com_orbitas)
+    glutDisplayFunc(Sistema_Solar_com_orbitas) # Exibe na tela o retorno da funcao chamada
 
   elif tecla == b'c' or tecla == b'C': # Centraliza no Sol - visao superior do sistema
     obsZ = 50
@@ -380,10 +394,10 @@ def teclado(tecla, eixoX, eixoY):
     orbita = not orbita
 
     if(orbita==True):
-      glutDisplayFunc(Sistema_Solar_com_orbitas)
+      glutDisplayFunc(Sistema_Solar_com_orbitas) # Exibe na tela o retorno da funcao chamada
     else:
       # Mostra o sistema solar sem as orbitas
-      glutDisplayFunc(Desenha)
+      glutDisplayFunc(Desenha) # Exibe na tela o retorno da funcao chamada
 
   # Volta a matriz ao seu estado padrao (exemplo, comecar da origem em vez do estado atual)
   # Visto que algumas transformacoes sao relativas ao estado atual da matriz (ex: rotacao e translacao)
@@ -391,11 +405,12 @@ def teclado(tecla, eixoX, eixoY):
   gluLookAt(obsX,obsY,obsZ, 0,0,0, 0,1,0) # Cria uma matriz de visualizacao derivada de um ponto de vista indicando centro da cena e vetor UP
   glutPostRedisplay() # Marca para exibir novamente o plano da janela atual na proxima iteracao do glutMainLoop
 
+# Gerencia os eventos do mouse, se botao foi pressionado ou nao
 def GerenciaMouse(button, state, eixoX, eixoY):
   global obsX, obsY, obsZ, rotX, rotY, obsX_ini, obsY_ini, obsZ_ini, rotX_ini, rotY_ini, x_ini, y_ini, botao
 
+  # Se foi pressionado, salva os parametros atuais
   if (state==GLUT_DOWN):
-    # Salva os parametros atuais
     x_ini = eixoX
     y_ini = eixoY
     obsX_ini = obsX
@@ -407,7 +422,7 @@ def GerenciaMouse(button, state, eixoX, eixoY):
   else:
     botao = -1
 
-def GerenciaMovim(eixoX, eixoY):
+def GerenciaMovimento(eixoX, eixoY):
   global x_ini, y_ini, rotX, rotY, obsX, obsY, obsZ
 
   # Botao esquerdo do mouse
@@ -428,16 +443,7 @@ def GerenciaMovim(eixoX, eixoY):
     # E modifica distancia do observador
     obsZ = obsZ_ini + deltaz/SENS_OBS
 
-  # Botao do meio
-  elif(botao==GLUT_MIDDLE_BUTTON):
-    # Calcula diferencas
-    deltax = x_ini - eixoX
-    deltay = y_ini - eixoY
-    # E modifica posicoes
-    obsX = obsX_ini + deltax/SENS_TRANSL
-    obsY = obsY_ini - deltay/SENS_TRANSL
-
-  PosicionaObservador()
+  PosicionaObservador() # Padrao da funcao, ja que altera a visualizacao (angulo ou distancia)
   glutPostRedisplay() # Marca para exibir novamente o plano da janela atual na proxima iteracao do glutMainLoop
 
 def main():
@@ -464,7 +470,7 @@ def main():
   glutKeyboardFunc(teclado)
   glutMouseFunc(GerenciaMouse)
   # Quando o mouse se move dentro da janela enquanto um ou mais botoes do mouse sao pressionados
-  glutMotionFunc(GerenciaMovim)
+  glutMotionFunc(GerenciaMovimento)
 
   # Inicializa ambiente (variaveis, texturas, fonte de luz e atualizacao de profundidade)
   Inicializa()
