@@ -25,7 +25,7 @@ SENS_TRANSL = 10.0
 def Desenha_planeta(textura, pos_y, pos_x, escala, diametro, raio):
   t = glutGet(GLUT_ELAPSED_TIME) / 1000.0
   a = t*2
-  # t eh o numero de segundos desde que glutInit foi chamado
+  # GLUT_ELAPSED_TIME eh o numero de segundos desde que glutInit foi chamado
 
   # Insere a matriz de transformacoes corrente na pilha para realizar as transformacoes
   # Serve para restringir o efeito das transformacoes ao escopo que desejamos ou lembrar da sequencia de transformacoes realizadas
@@ -139,7 +139,7 @@ def Desenha():
 def Sistema_Solar():
   global tex1, tex2
 
-  t = glutGet(GLUT_ELAPSED_TIME) / 1000.0
+  t = glutGet(GLUT_ELAPSED_TIME) / 1000.0 # Tempo desde que o GlutInit foi inicializado
   a = t
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
@@ -157,7 +157,7 @@ def Sistema_Solar():
     mat_specular   = [ 1.0, 1.0, 1.0, 1.0 ]
     high_shininess = [ 100.0 ]
 
-    glShadeModel (GL_SMOOTH)
+    glShadeModel (GL_SMOOTH) # Define a técnica de sombreamento como suave (SMOOTH)
 
     # Propriedades da fonte de luz
     glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient)
@@ -172,7 +172,6 @@ def Sistema_Solar():
 
     glPushMatrix()
     glRasterPos2f(0,1.5)
-    # glutBitmapString(GLUT_BITMAP_9_BY_15, "Sol")
     qobj = gluNewQuadric()
     gluQuadricTexture(qobj, GL_TRUE)
     glEnable(GL_TEXTURE_2D)
@@ -215,12 +214,7 @@ def Sistema_Solar():
   # NETUNO   */  #Diametro: 49.528 km
   Desenha_planetas_com_Satelites_e_Aneis(tex11, tex4, tex10, 127, 127, 1.5,0.495,0.20,1,1)
 
-  # PLUTAO */  #Diametro: 2.377 km
-  desenha_planetas_com_Satelites(tex4, tex4, 140, 140,-0.35,2.3,3,0.8,0.6)
-
   glRasterPos2f(0,-51)
-  # glutBitmapString(GLUT_BITMAP_9_BY_15, "Cinturao de Asteroides")
-  # desenhaAsteroide(10,10)
 
 # Cria uma orbita
 def Desenha_Orbita(pos_y, pos_x):
@@ -267,9 +261,6 @@ def mostraOrbitas():
 
   # NETUNO - Diametro: 49.528 km
   Desenha_Orbita(127,127)
-
-  # PLUTAO - Diametro: 2.377 km
-  # Desenha_Orbita(140,140)
 
 def Sistema_Solar_com_orbitas():
   glDrawBuffer(GL_BACK)
@@ -458,8 +449,6 @@ def main():
   glutInitWindowSize(1800,1200)
   glutInitWindowPosition(100,100)
   glutCreateWindow("Sistema Solar")
-
-  # imprimeInstrucoes() <-> Metodo comentado
 
   # Exibe na tela o retorno da funcao chamada
   glutDisplayFunc(Sistema_Solar_com_orbitas)
