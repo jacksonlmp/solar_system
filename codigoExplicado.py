@@ -10,10 +10,10 @@ from texture import load_images
 # Variaveis globais
 global angulo, fAspect, rotX, rotY, rotZ, obsX, obsY, obsZ, solAtivo
 global rotX_ini, rotY_ini, obsX_ini, obsY_ini, obsZ_ini, x_ini, y_ini, botao
-global tex0, tex1, tex2, tex3, tex4, tex5, tex6, tex7, tex8, tex9, tex10, tex11
+global sun, mercury, venus, earth, moon, mars, jupiter, saturn, saturnRing, uranus, uranusRing, neptune
 
-solAtivo = 1
-orbita = 1
+solAtivo = True
+orbita = True
 eixoX, eixoY, eixoZ = 0, 0, 0
 
 # Constantes utilizadas na interacao com o mouse
@@ -25,7 +25,7 @@ SENS_TRANSL = 10.0
 def Desenha_planeta(textura, pos_y, pos_x, escala, diametro, raio):
   t = glutGet(GLUT_ELAPSED_TIME) / 1000.0
   a = t*2
-  # t eh o numero de segundos desde que glutInit foi chamado
+  # GLUT_ELAPSED_TIME eh o numero de segundos desde que glutInit foi chamado
 
   # Insere a matriz de transformacoes corrente na pilha para realizar as transformacoes
   # Serve para restringir o efeito das transformacoes ao escopo que desejamos ou lembrar da sequencia de transformacoes realizadas
@@ -46,23 +46,22 @@ def Desenha_planeta(textura, pos_y, pos_x, escala, diametro, raio):
 
 def Desenha_planetas_com_Satelites_e_Aneis(textura_planeta, textura_satelite, textura_aneis, pos_y, pos_x, escala, diametro1, diametro2, raio, raio_lua):
 
-  t = glutGet(GLUT_ELAPSED_TIME) / 1000.0
-  a = t * 2
+  tempo = glutGet(GLUT_ELAPSED_TIME) / 1000.0
+  angulo = tempo * 2
 
   # Insere a matriz de transformacoes corrente na pilha para realizar as transformacoes
   # Serve para restringir o efeito das transformacoes ao escopo que desejamos ou lembrar da sequencia de transformacoes realizadas
   glPushMatrix()
-  glRasterPos2f(0,-pos_y)
   # glutBitmapString(GLUT_BITMAP_9_BY_15, planeta)
   glTranslated(0, -pos_y, 0)
   # Movimento de Translacao
-  glTranslatef((pos_x * math.cos(2.0 * 3.14 * a*raio / 100)),(pos_y +pos_y * math.sin(2.0 * 3.14 * a*raio/ 100)), 0)
+  glTranslatef((pos_x * math.cos(2.0 * 3.14 * angulo * raio / 100)),(pos_y +pos_y * math.sin(2.0 * 3.14 * angulo * raio/ 100)), 0)
   obj = gluNewQuadric()
   gluQuadricTexture(obj, GL_TRUE)
   glEnable(GL_TEXTURE_2D)
   glBindTexture(GL_TEXTURE_2D,textura_planeta)
   glScalef(escala,escala,escala)
-  glRotated(a*20, 0, 0, 1)
+  glRotated(angulo * 20, 0, 0, 1)
   gluSphere(obj,diametro1,25,25)
   glScalef(escala,escala,escala)
   # Desenha o anel
@@ -72,44 +71,43 @@ def Desenha_planetas_com_Satelites_e_Aneis(textura_planeta, textura_satelite, te
 
   # Satelite
   # Translacao da Lua
-  glTranslatef(pos_x/20*(math.cos(2.0 * 3.14 * a*raio_lua / 100)),(pos_y/20*math.sin(2.0 * 3.14 * a*raio_lua / 100)), 0)
+  glTranslatef(pos_x/20*(math.cos(2.0 * 3.14 * angulo * raio_lua / 100)),(pos_y/20*math.sin(2.0 * 3.14 * angulo * raio_lua / 100)), 0)
   glBindTexture(GL_TEXTURE_2D,textura_satelite)
   glScalef(escala,escala,escala)
-  glRotated(a * 5, 1, 0, 1)
+  glRotated(angulo * 5, 1, 0, 1)
   gluSphere(obj,diametro2,50,50)
   glDisable(GL_TEXTURE_2D)
 
   glPopMatrix() # Fim do push
 
 def desenha_planetas_com_Satelites(textura_planeta, textura_satelite, pos_y, pos_x, escala, diametro1, diametro2, raio, raio_lua):
-  t = glutGet(GLUT_ELAPSED_TIME) / 1000.0
-  a = t*2
+  tempo = glutGet(GLUT_ELAPSED_TIME) / 1000.0 # Tempo desde que o glutInit foi chamado
+  angulo = tempo * 2 
 
   # Insere a matriz de transformacoes corrente na pilha para realizar as transformacoes
   # Serve para restringir o efeito das transformacoes ao escopo que desejamos ou lembrar da sequencia de transformacoes realizadas
   glPushMatrix()
-  glRasterPos2f(0,-pos_y)
-  # glutBitmapString(GLUT_BITMAP_9_BY_15, planeta)
+  # Produz uma matriz de translação em x,y,z
   glTranslated(0, -pos_y, 0)
   # Movimento de Translacao
-  glTranslatef((pos_x * math.cos(2.0 * 3.14 * a*raio / 100)),(pos_y +pos_y * math.sin(2.0 * 3.14 * a*raio/ 100)), 0)
-  obj = gluNewQuadric()
-  gluQuadricTexture(obj,GL_TRUE)
-  glEnable(GL_TEXTURE_2D)
-  glBindTexture(GL_TEXTURE_2D,textura_planeta)
-  glScalef(escala,escala,escala)
-  glRotated(a*20, 0, 0, 1)
-  gluSphere(obj,diametro1,25,25)
+  glTranslatef((pos_x * math.cos(2.0 * 3.14 * angulo * raio / 100)),(pos_y + pos_y * math.sin(2.0 * 3.14 * angulo * raio / 100)), 0)
+  obj = gluNewQuadric() # Cria a quadrica
+  gluQuadricTexture(obj, GL_TRUE) # Especifica textura na quadrica
+  glEnable(GL_TEXTURE_2D) # Habilita a textura
+  glBindTexture(GL_TEXTURE_2D, textura_planeta) # Define o nome da textura do planeta
+  glScalef(escala, escala, escala) # Define o tamanho do objeto
+  glRotated(angulo * 20, 0, 0, 1) # Define a matriz de rotação em torno de si mesmo
+  gluSphere(obj, diametro1, 25, 25) # Cria a esfera a partir da quadrica e do diametro, uniformidade do objeto é definido pelos últimos dois parametros
 
   # Satelite
   # Translacao da Lua
-  glTranslatef(pos_x/10*(math.cos(2.0 * 3.14 * a*raio_lua / 100)),(pos_y/10*math.sin(2.0 * 3.14 * a*raio_lua / 100)), 0)
+  glTranslatef(pos_x/10*(math.cos(2.0 * 3.14 * angulo * raio_lua / 100)),(pos_y/10*math.sin(2.0 * 3.14 * angulo * raio_lua / 100)), 0)
 
-  glBindTexture(GL_TEXTURE_2D,textura_satelite)
-  glScalef(escala,escala,escala)
-  glRotated(a*5, 1, 0, 1)
-  gluSphere(obj,diametro2,50,50)
-  glDisable(GL_TEXTURE_2D)
+  glBindTexture(GL_TEXTURE_2D,textura_satelite) # Coloca a textura na lua
+  glScalef(escala,escala,escala) # Define a escala da lua
+  glRotated(angulo * 5, 1, 0, 1) # Define a rotação da lua
+  gluSphere(obj,diametro2,50,50) # Desenha a esfera da lua
+  glDisable(GL_TEXTURE_2D) # Conclui o desenho
 
   glPopMatrix() # Fim do push
 
@@ -137,90 +135,57 @@ def Desenha():
 
 # Desenha o sistema solar e as orbitas dos planetas
 def Sistema_Solar():
-  global tex1, tex2
+  global mercury, venus
 
-  t = glutGet(GLUT_ELAPSED_TIME) / 1000.0
-  a = t
+  tempo = glutGet(GLUT_ELAPSED_TIME) / 1000.0 # Tempo desde que o GlutInit foi inicializado
+  angulo = tempo
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
   # SOL
-  if(solAtivo==1):
-    # GLfloat
-    light_ambient = [eixoX,eixoY,eixoZ,1.0]
-    light_diffuse = [eixoX,eixoY,eixoZ,1.0]
-    light_specular = [eixoX, eixoY, eixoZ, 1.0]
-    light_position= [1.0, 0.0, 0.0, 1.0]
-    
-    # configura alguns parametros do modelo de iluminacao: MATERIAL
-    mat_ambient    = [0.7, 0.7, 0.7, 1.0 ]
-    mat_diffuse    = [0.8, 0.8, 0.8, 1.0 ]
-    mat_specular   = [ 1.0, 1.0, 1.0, 1.0 ]
-    high_shininess = [ 100.0 ]
-
-    glShadeModel (GL_SMOOTH)
-
-    # Propriedades da fonte de luz
-    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient)
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse)
-    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular)
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position)
-
-    glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE)
-
-    glDisable(GL_LIGHTING)
+  if(solAtivo):
+    # Desabilita a iluminação, glColor que definimos nas orbitas por exemplo será visível
+    glDisable(GL_LIGHTING) 
     glDisable(GL_LIGHT0)
 
     glPushMatrix()
-    glRasterPos2f(0,1.5)
-    # glutBitmapString(GLUT_BITMAP_9_BY_15, "Sol")
-    qobj = gluNewQuadric()
-    gluQuadricTexture(qobj, GL_TRUE)
-    glEnable(GL_TEXTURE_2D)
-    glBindTexture(GL_TEXTURE_2D,tex0)
-    glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient)
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse)
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular)
-    glMaterialfv(GL_FRONT, GL_SHININESS, high_shininess)
-    glRotated(a*7, 0, 0, 1)
-    glScalef(3,3,3)
-    gluSphere(qobj,1,25,25)
+    qobj = gluNewQuadric() # Gera a quádrica para definir o objeto
+    gluQuadricTexture(qobj, GL_TRUE) # Indica que quádrica vai ter textura aplicada
+    glEnable(GL_TEXTURE_2D) # Habilita a textura
+    glBindTexture(GL_TEXTURE_2D,sun) # Especifica a textura do Sol na quádrica
+    glRotated(angulo * 7, 0, 0, 1) # Rotaciona o objeto para formato o movimento de rotação do Sol em torno de si mesmo
+    glScalef(3,3,3) # Aumenta o tamanho (escala) do Sol
+    gluSphere(qobj,1,50,50) # Cria a espera do Sol a partir da quádrica
     glPopMatrix() # Fim do push
     glDisable(GL_TEXTURE_2D)
   else:
+    # Habilita a iluminação, glColor que definimos nas orbitas não será visível
     glEnable(GL_LIGHTING)
     glEnable(GL_LIGHT0)
     glEnable(GL_DEPTH_TEST)
 
    # MERCURIO - Diametro: 4.879,4 km
-  Desenha_planeta(tex1, 7, 7, 2,0.48,3.7)
+  Desenha_planeta(mercury, 7, 7, 2,0.48,3.7)
 
   # VENUS - Diametro: 12.103,6 km
-  Desenha_planeta(tex2, 17, 17, 1.2, 1.21 ,2.5)
+  Desenha_planeta(venus, 17, 17, 1.2, 1.21 ,2.5)
 
   # TERRA E LUA - Diametro Terra: 12.756,2 km
-  desenha_planetas_com_Satelites(tex3, tex4, 27, 27, 1.2,1.27,0.5,1.9,0.2)
+  desenha_planetas_com_Satelites(earth, moon, 27, 27, 1.2,1.27,0.5,1.9,0.2)
 
   # MARTE - Diametro: 6.792,4 km
-  desenha_planetas_com_Satelites(tex5, tex4, 41, 41, 1.2,0.68,0.5,1.9,1)
+  desenha_planetas_com_Satelites(mars, moon, 41, 41, 1.2,0.68,0.5,1.9,1)
 
-  # JUPITER       */ #Diametro: 142.984 km
-  Desenha_planetas_com_Satelites_e_Aneis(tex6, tex4, tex8, 80, 80, 1.5,1.43,0.25,1.9,1)
+  # JUPITER - Diametro: 142.984 km
+  Desenha_planetas_com_Satelites_e_Aneis(jupiter, moon, saturnRing, 80, 80, 1.5,1.43,0.25,1.9,1)
 
-  # SATURNO     */ #Diametro: 120.536 km
-  Desenha_planetas_com_Satelites_e_Aneis(tex7, tex4, tex8, 97, 97, 1.5,1.2,0.25,1.5,1)
+  # SATURNO - Diametro: 120.536 km
+  Desenha_planetas_com_Satelites_e_Aneis(saturn, moon, saturnRing, 97, 97, 1.5,1.2,0.25,1.5,1)
 
-  # URANO   */ #Diametro: 51.118 km
-  Desenha_planetas_com_Satelites_e_Aneis(tex8, tex4, tex10, 107, 107, 1.5,0.51,0.25,1.2,1.3)
+  # URANO - Diametro: 51.118 km
+  Desenha_planetas_com_Satelites_e_Aneis(uranus, moon, uranusRing, 107, 107, 1.5,0.9,0.25,1.2,1.3)
 
-  # NETUNO   */  #Diametro: 49.528 km
-  Desenha_planetas_com_Satelites_e_Aneis(tex11, tex4, tex10, 127, 127, 1.5,0.495,0.20,1,1)
-
-  # PLUTAO */  #Diametro: 2.377 km
-  desenha_planetas_com_Satelites(tex4, tex4, 140, 140,-0.35,2.3,3,0.8,0.6)
-
-  glRasterPos2f(0,-51)
-  # glutBitmapString(GLUT_BITMAP_9_BY_15, "Cinturao de Asteroides")
-  # desenhaAsteroide(10,10)
+  # NETUNO - Diametro: 49.528 km
+  Desenha_planetas_com_Satelites_e_Aneis(neptune, moon, uranusRing, 127, 127, 1.5,0.8,0.20,1,1)
 
 # Cria uma orbita
 def Desenha_Orbita(pos_y, pos_x):
@@ -268,9 +233,6 @@ def mostraOrbitas():
   # NETUNO - Diametro: 49.528 km
   Desenha_Orbita(127,127)
 
-  # PLUTAO - Diametro: 2.377 km
-  # Desenha_Orbita(140,140)
-
 def Sistema_Solar_com_orbitas():
   glDrawBuffer(GL_BACK)
   # Limpa a janela de visualizao com a cor de fundo especificada
@@ -278,6 +240,7 @@ def Sistema_Solar_com_orbitas():
   # desenha todos os objetos na tela
   Sistema_Solar()
   mostraOrbitas()
+  # Alterna os buffers, entre uma janela (tela) e outra, enquanto a outra é renderizada
   glutSwapBuffers()
 
 def atualiza():
@@ -286,7 +249,7 @@ def atualiza():
 
 def Inicializa ():
   global angulo, rotX, rotY, rotZ, obsX, obsY, obsZ
-  global tex0, tex1, tex2, tex3, tex4, tex5, tex6, tex7, tex8, tex9, tex10, tex11
+  global sun, mercury, venus, earth, moon, mars, jupiter, saturn, saturnRing, uranus, uranusRing, neptune
 
   # Inicializa a variavel que especifica o angulo da projecao
   # perspectiva
@@ -299,11 +262,7 @@ def Inicializa ():
   obsX = obsY = 0
   obsZ = 150
 
-  # loadTexture() #Inicializa as texturas
-  tex0, tex1, tex2, tex3, tex4, tex5, tex6, tex7, tex8, tex9, tex10, tex11 = load_images()
-
-  # #Inicializa obj
-  # inicializaObj()
+  sun, mercury, venus, earth, moon, mars, jupiter, saturn, saturnRing, uranus, uranusRing, neptune = load_images()
 
   # Especificando que as facetas traseiras serao cortadas
   glEnable(GL_CULL_FACE) # Habilita recursos do GL -> cortar as facetas
@@ -393,7 +352,7 @@ def teclado(tecla, eixoX, eixoY):
   elif tecla == b'o' or tecla == b'O': # Mostra ou remove as orbitas
     orbita = not orbita
 
-    if(orbita==True):
+    if(orbita):
       glutDisplayFunc(Sistema_Solar_com_orbitas) # Exibe na tela o retorno da funcao chamada
     else:
       # Mostra o sistema solar sem as orbitas
@@ -459,11 +418,9 @@ def main():
   glutInitWindowPosition(100,100)
   glutCreateWindow("Sistema Solar")
 
-  # imprimeInstrucoes() <-> Metodo comentado
-
   # Exibe na tela o retorno da funcao chamada
   glutDisplayFunc(Sistema_Solar_com_orbitas)
-  # ??? Qual o objetivo?
+  # Remodelagem na janela atual
   glutReshapeFunc(Redimensiona)
   # Define o retorno das teclas direcionais, teclado e mouse para a janela atual (callback gerado por evento)
   glutSpecialFunc(SpecialKeyboard)

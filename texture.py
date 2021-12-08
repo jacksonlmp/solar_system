@@ -5,25 +5,25 @@ from OpenGL.GLU import *
 from OpenGL.GLUT import *
 from PIL import Image
 
-global texture_index, tex0, tex1, tex2, tex3, tex4, tex5, tex6, tex7, tex8, tex9, tex10, tex11
+global texture_index, sun, mercury, venus, earth, moon, mars, jupiter, saturn, saturnRing, uranus, uranusRing, neptune
 
 
 #load images
 def load_images():
-    global tex0, tex1, tex2, tex3, tex4, tex5, tex6, tex7, tex8, tex9, tex10, tex11
-    tex0 = read_texture('./textures/sun.jpg')
-    tex1 = read_texture('./textures/mercury.jpg')
-    tex2 = read_texture('./textures/venus.jpg')
-    tex3 = read_texture('./textures/earth.jpg')
-    tex4 = read_texture('./textures/moon.jpg')
-    tex5 = read_texture('./textures/mars.jpg')
-    tex6 = read_texture('./textures/jupiter.jpg')
-    tex7 = read_texture('./textures/saturn.jpg')
-    tex8 = read_texture('./textures/saturnRing.jpg') #sem referencia
-    tex9 = read_texture('./textures/uranus.jpg')
-    tex10 = read_texture('./textures/uranusRing.jpg') #sem referencia
-    tex11 = read_texture('./textures/neptune.jpg')
-    return tex0, tex1, tex2, tex3, tex4, tex5, tex6, tex7, tex8, tex9, tex10, tex11
+    global sun, mercury, venus, earth, moon, mars, jupiter, saturn, saturnRing, uranus, uranusRing, neptune
+    sun = read_texture('./textures/sun.jpg')
+    mercury = read_texture('./textures/mercury.jpg')
+    venus = read_texture('./textures/venus.jpg')
+    earth = read_texture('./textures/earth.jpg')
+    moon = read_texture('./textures/moon.jpg')
+    mars = read_texture('./textures/mars.jpg')
+    jupiter = read_texture('./textures/jupiter.jpg')
+    saturn = read_texture('./textures/saturn.jpg')
+    saturnRing = read_texture('./textures/saturnRing.jpg') #sem referencia
+    uranus = read_texture('./textures/uranus.jpg')
+    uranusRing = read_texture('./textures/uranusRing.jpg') #sem referencia
+    neptune = read_texture('./textures/neptune.jpg')
+    return sun, mercury, venus, earth, moon, mars, jupiter, saturn, saturnRing, uranus, uranusRing, neptune
 
 def read_texture(filename):
     img = Image.open(filename)
