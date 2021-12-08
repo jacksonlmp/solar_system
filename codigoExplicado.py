@@ -10,10 +10,10 @@ from texture import load_images
 # Variaveis globais
 global angulo, fAspect, rotX, rotY, rotZ, obsX, obsY, obsZ, solAtivo
 global rotX_ini, rotY_ini, obsX_ini, obsY_ini, obsZ_ini, x_ini, y_ini, botao
-global tex0, tex1, tex2, tex3, tex4, tex5, tex6, tex7, tex8, tex9, tex10, tex11
+global sun, mercury, venus, earth, moon, mars, jupiter, saturn, saturnRing, uranus, uranusRing, neptune
 
-solAtivo = 1
-orbita = 1
+solAtivo = True
+orbita = True
 eixoX, eixoY, eixoZ = 0, 0, 0
 
 # Constantes utilizadas na interacao com o mouse
@@ -52,7 +52,7 @@ def Desenha_planetas_com_Satelites_e_Aneis(textura_planeta, textura_satelite, te
   # Insere a matriz de transformacoes corrente na pilha para realizar as transformacoes
   # Serve para restringir o efeito das transformacoes ao escopo que desejamos ou lembrar da sequencia de transformacoes realizadas
   glPushMatrix()
-  glRasterPos2f(0,-pos_y)
+  # glRasterPos2f(0,-pos_y)
   # glutBitmapString(GLUT_BITMAP_9_BY_15, planeta)
   glTranslated(0, -pos_y, 0)
   # Movimento de Translacao
@@ -88,7 +88,7 @@ def desenha_planetas_com_Satelites(textura_planeta, textura_satelite, pos_y, pos
   # Insere a matriz de transformacoes corrente na pilha para realizar as transformacoes
   # Serve para restringir o efeito das transformacoes ao escopo que desejamos ou lembrar da sequencia de transformacoes realizadas
   glPushMatrix()
-  glRasterPos2f(0,-pos_y)
+  # glRasterPos2f(0,-pos_y)
   # glutBitmapString(GLUT_BITMAP_9_BY_15, planeta)
   glTranslated(0, -pos_y, 0)
   # Movimento de Translacao
@@ -137,14 +137,14 @@ def Desenha():
 
 # Desenha o sistema solar e as orbitas dos planetas
 def Sistema_Solar():
-  global tex1, tex2
+  global mercury, venus
 
   t = glutGet(GLUT_ELAPSED_TIME) / 1000.0 # Tempo desde que o GlutInit foi inicializado
   a = t
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
   # SOL
-  if(solAtivo==1):
+  if(solAtivo):
     # GLfloat
     light_ambient = [eixoX,eixoY,eixoZ,1.0]
     light_diffuse = [eixoX,eixoY,eixoZ,1.0]
@@ -152,10 +152,10 @@ def Sistema_Solar():
     light_position= [1.0, 0.0, 0.0, 1.0]
     
     # configura alguns parametros do modelo de iluminacao: MATERIAL
-    mat_ambient    = [0.7, 0.7, 0.7, 1.0 ]
-    mat_diffuse    = [0.8, 0.8, 0.8, 1.0 ]
-    mat_specular   = [ 1.0, 1.0, 1.0, 1.0 ]
-    high_shininess = [ 100.0 ]
+    # mat_ambient    = [0.7, 0.7, 0.7, 1.0 ]
+    # mat_diffuse    = [0.8, 0.8, 0.8, 1.0 ]
+    # mat_specular   = [ 1.0, 1.0, 1.0, 1.0 ]
+    # high_shininess = [ 100.0 ]
 
     glShadeModel (GL_SMOOTH) # Define a técnica de sombreamento como suave (SMOOTH)
 
@@ -171,18 +171,18 @@ def Sistema_Solar():
     glDisable(GL_LIGHT0)
 
     glPushMatrix()
-    glRasterPos2f(0,1.5)
+    # glRasterPos2f(0,1.5)
     qobj = gluNewQuadric()
     gluQuadricTexture(qobj, GL_TRUE)
     glEnable(GL_TEXTURE_2D)
-    glBindTexture(GL_TEXTURE_2D,tex0)
-    glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient)
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse)
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular)
-    glMaterialfv(GL_FRONT, GL_SHININESS, high_shininess)
+    glBindTexture(GL_TEXTURE_2D,sun)
+    # glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient)
+    # glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse)
+    # glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular)
+    # glMaterialfv(GL_FRONT, GL_SHININESS, high_shininess)
     glRotated(a*7, 0, 0, 1)
     glScalef(3,3,3)
-    gluSphere(qobj,1,25,25)
+    gluSphere(qobj,1,50,50)
     glPopMatrix() # Fim do push
     glDisable(GL_TEXTURE_2D)
   else:
@@ -191,30 +191,30 @@ def Sistema_Solar():
     glEnable(GL_DEPTH_TEST)
 
    # MERCURIO - Diametro: 4.879,4 km
-  Desenha_planeta(tex1, 7, 7, 2,0.48,3.7)
+  Desenha_planeta(mercury, 7, 7, 2,0.48,3.7)
 
   # VENUS - Diametro: 12.103,6 km
-  Desenha_planeta(tex2, 17, 17, 1.2, 1.21 ,2.5)
+  Desenha_planeta(venus, 17, 17, 1.2, 1.21 ,2.5)
 
   # TERRA E LUA - Diametro Terra: 12.756,2 km
-  desenha_planetas_com_Satelites(tex3, tex4, 27, 27, 1.2,1.27,0.5,1.9,0.2)
+  desenha_planetas_com_Satelites(earth, moon, 27, 27, 1.2,1.27,0.5,1.9,0.2)
 
   # MARTE - Diametro: 6.792,4 km
-  desenha_planetas_com_Satelites(tex5, tex4, 41, 41, 1.2,0.68,0.5,1.9,1)
+  desenha_planetas_com_Satelites(mars, moon, 41, 41, 1.2,0.68,0.5,1.9,1)
 
   # JUPITER       */ #Diametro: 142.984 km
-  Desenha_planetas_com_Satelites_e_Aneis(tex6, tex4, tex8, 80, 80, 1.5,1.43,0.25,1.9,1)
+  Desenha_planetas_com_Satelites_e_Aneis(jupiter, moon, saturnRing, 80, 80, 1.5,1.43,0.25,1.9,1)
 
   # SATURNO     */ #Diametro: 120.536 km
-  Desenha_planetas_com_Satelites_e_Aneis(tex7, tex4, tex8, 97, 97, 1.5,1.2,0.25,1.5,1)
+  Desenha_planetas_com_Satelites_e_Aneis(saturn, moon, saturnRing, 97, 97, 1.5,1.2,0.25,1.5,1)
 
   # URANO   */ #Diametro: 51.118 km
-  Desenha_planetas_com_Satelites_e_Aneis(tex8, tex4, tex10, 107, 107, 1.5,0.51,0.25,1.2,1.3)
+  Desenha_planetas_com_Satelites_e_Aneis(uranus, moon, uranusRing, 107, 107, 1.5,0.9,0.25,1.2,1.3)
 
   # NETUNO   */  #Diametro: 49.528 km
-  Desenha_planetas_com_Satelites_e_Aneis(tex11, tex4, tex10, 127, 127, 1.5,0.495,0.20,1,1)
+  Desenha_planetas_com_Satelites_e_Aneis(neptune, moon, uranusRing, 127, 127, 1.5,0.8,0.20,1,1)
 
-  glRasterPos2f(0,-51)
+  # glRasterPos2f(0,-51)
 
 # Cria uma orbita
 def Desenha_Orbita(pos_y, pos_x):
@@ -277,7 +277,7 @@ def atualiza():
 
 def Inicializa ():
   global angulo, rotX, rotY, rotZ, obsX, obsY, obsZ
-  global tex0, tex1, tex2, tex3, tex4, tex5, tex6, tex7, tex8, tex9, tex10, tex11
+  global sun, mercury, venus, earth, moon, mars, jupiter, saturn, saturnRing, uranus, uranusRing, neptune
 
   # Inicializa a variavel que especifica o angulo da projecao
   # perspectiva
@@ -291,7 +291,7 @@ def Inicializa ():
   obsZ = 150
 
   # loadTexture() #Inicializa as texturas
-  tex0, tex1, tex2, tex3, tex4, tex5, tex6, tex7, tex8, tex9, tex10, tex11 = load_images()
+  sun, mercury, venus, earth, moon, mars, jupiter, saturn, saturnRing, uranus, uranusRing, neptune = load_images()
 
   # #Inicializa obj
   # inicializaObj()
@@ -384,7 +384,7 @@ def teclado(tecla, eixoX, eixoY):
   elif tecla == b'o' or tecla == b'O': # Mostra ou remove as orbitas
     orbita = not orbita
 
-    if(orbita==True):
+    if(orbita):
       glutDisplayFunc(Sistema_Solar_com_orbitas) # Exibe na tela o retorno da funcao chamada
     else:
       # Mostra o sistema solar sem as orbitas
